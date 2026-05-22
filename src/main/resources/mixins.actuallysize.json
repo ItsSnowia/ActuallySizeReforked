@@ -96,7 +96,12 @@
     "world.fear.PanicGoalMixin",
     "world.fear.RangedAttackGoalMixin",
     "world.fear.RangedBowAttackMixin",
-    "world.fear.RangedCrossbowAttackGoalMixin"
+    "world.fear.RangedCrossbowAttackGoalMixin",
+    "world.inventory.AbstractContainerMenuMixin",
+    "world.inventory.ContainerMixin",
+    "world.inventory.InventoryMixin",
+    "world.inventory.ItemStackMixin",
+    "world.inventory.SlotMixin"
   ],
   "injectors": {
     "defaultRequire": 1

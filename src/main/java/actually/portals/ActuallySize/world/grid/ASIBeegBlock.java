@@ -1,6 +1,7 @@
 package actually.portals.ActuallySize.world.grid;
 
 import actually.portals.ActuallySize.ASIUtilities;
+import actually.portals.ActuallySize.ActuallyServerConfig;
 import actually.portals.ActuallySize.ActuallySizeInteractions;
 import actually.portals.ActuallySize.world.grid.construction.ASIGConstructor;
 import actually.portals.ActuallySize.world.grid.construction.cube.ASIGCShelled;
@@ -496,7 +497,9 @@ public class ASIBeegBlock {
 
             // Get limit from player inventory
             int limit;
-            if (counts < 1) { limit = getScale() * getScale() * getScale(); } else { limit = counts * getScale() * getScale(); }
+            if (counts < 1) { limit = getScale() * getScale() * getScale(); } else {
+                if (ActuallyServerConfig.beegBuildingDropRate) { limit = counts * getScale() * getScale(); } else { limit = counts; }
+            }
 
             // Prepare indices
             ASIGConstructor constructor = getConstructor();
@@ -663,7 +666,14 @@ public class ASIBeegBlock {
 
                 boolean beegBlock = ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock(drop);
 
-                // Check against every consolidated stack
+                /*
+                 * Check against every consolidated stack and accomplishes two things
+                 *
+                 *  (1) Keeps track of the single most dropped item, the main drop
+                 *
+                 *  (2) All item stacks that stack are joined together, rather dropping
+                 *      a single item with a large count than five hundred separate items
+                 */
                 boolean found = false;
                 for (ItemStack cons : consolidated) {
                     if (ItemStack.isSameItemSameTags(cons, drop)) {
@@ -684,11 +694,12 @@ public class ASIBeegBlock {
             }
 
             // Bonus drop for the main drop
-            int bonusCount = OotilityNumbers.ceil(mainDrop.getCount() * (1 + (getEffectiveScale() * 0.02D)));
-            int beegScale = OotilityNumbers.ceil(ASIUtilities.getEntityScale(player));
-            int idealCount = beegScale * beegScale * beegScale;
-            if (bonusCount > idealCount) { bonusCount = idealCount; }
-            mainDrop.setCount(bonusCount);
+            if (ActuallyServerConfig.beegBuildingDropRate) {
+                int bonusCount = OotilityNumbers.ceil(mainDrop.getCount() * (1 + (getEffectiveScale() * 0.02D)));
+                int beegScale = OotilityNumbers.ceil(ASIUtilities.getEntityScale(player));
+                int idealCount = beegScale * beegScale * beegScale;
+                if (bonusCount > idealCount) { bonusCount = idealCount; }
+                mainDrop.setCount(bonusCount); }
 
             BeegBreaker blockRep = (BeegBreaker) Blocks.BEDROCK;
             blockRep.actuallysize$setBeegBreaking(true);

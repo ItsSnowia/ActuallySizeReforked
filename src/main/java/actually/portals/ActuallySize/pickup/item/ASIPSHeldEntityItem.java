@@ -78,6 +78,14 @@ public class ASIPSHeldEntityItem extends Item {
     @NotNull public final static String TAG_ENTITY_ID = "HeldEntityID";
 
     /**
+     * With Beeg Inventory enabled, the byte that usually saves item stacks
+     * is simply not enough. Then I must save them as integer number type.
+     *
+     * @since 1.0.0
+     */
+    @NotNull public final static String TAG_INT_COUNT = "ASICount";
+
+    /**
      * If this held entity item is the PLAYER variant.
      *
      * @since 1.0.0

@@ -257,7 +257,23 @@ public class ActuallyServerConfig {
             .comment(" smaller than your scale will decrease them.")
             .comment(" This works to balance BEEG BUILDING option, because")
             .comment(" giants break and place down TONS of blocks.")
-            .define("beegBuildingDropRate", true);
+            .define("beegBuildingDropRate", false);
+
+    /**
+     * If beegs receive less damage and knockback from all sources
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.IntValue BEEG_INVENTORIES = CONFIG_BUILDER
+            .comment(" ")
+            .comment(" #### ----|    Beeg Inventories    |----")
+            .comment(" Increases the capacity of slots in giant player")
+            .comment(" inventories, allowing them to hold a LOT more")
+            .comment(" blocks than usual. The number specified here is")
+            .comment(" how many times the scale increases inventory cap.")
+            .comment(" At 0, scale has no effect; at 1, it is a linear")
+            .comment(" increase; at the default of 3 it is volumetric")
+            .defineInRange("beegInventoryPower", 3,0, 3);
 
     /**
      * Whether the "Pickup Entity" system is enabled at all
@@ -320,6 +336,7 @@ public class ActuallyServerConfig {
     public static boolean usePracticalSize;
     public static double scaleLimitRider;
     public static boolean tankyBeegs;
+    public static int beegInventoryPower;
     public static boolean strongBeegs;
     public static boolean hungryBeegs;
     public static boolean delicateTinies;
@@ -355,6 +372,7 @@ public class ActuallyServerConfig {
         hungryBeegs = BEEGS_ARE_HUNGRY.get();
         fearThreshold = FEAR_THRESHOLD.get();
         beegBuilding = BEEG_BUILDING.get();
+        beegInventoryPower = BEEG_INVENTORIES.get();
         beegBuildingDropRate = BEEG_BUILDING_DROP_RATE.get();
 
         foodDuration = BEEGS_ARE_HUNGRY_DURATION.get();

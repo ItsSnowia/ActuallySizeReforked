@@ -1,6 +1,7 @@
 package actually.portals.ActuallySize.mixin.world.building;
 
 import actually.portals.ActuallySize.ASIUtilities;
+import actually.portals.ActuallySize.ActuallyServerConfig;
 import actually.portals.ActuallySize.ActuallySizeInteractions;
 import actually.portals.ActuallySize.world.blocks.BeegLightBlock;
 import actually.portals.ActuallySize.world.mixininterfaces.BeegBreaker;
@@ -49,7 +50,7 @@ public abstract class BlockMixin implements BeegBreaker {
     @WrapOperation(method = "popResource(Lnet/minecraft/world/level/Level;Ljava/util/function/Supplier;Lnet/minecraft/world/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private static boolean OnBeegItemDropped(Level instance, Entity entity, Operation<Boolean> original) {
 
-        if (actuallysize$beegBreaking) {
+        if (actuallysize$beegBreaking && ActuallyServerConfig.beegBuildingDropRate) {
             if (actuallysize$beeg != null) {
 
                 ItemEntity asItemEntity = (ItemEntity) entity;

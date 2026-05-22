@@ -1,6 +1,7 @@
 package actually.portals.ActuallySize.mixin.world.building;
 
 import actually.portals.ActuallySize.ASIUtilities;
+import actually.portals.ActuallySize.ActuallyServerConfig;
 import actually.portals.ActuallySize.ActuallySizeInteractions;
 import actually.portals.ActuallySize.world.blocks.furniture.ASIBeegFurnishing;
 import actually.portals.ActuallySize.world.grid.ASIBeegBlock;
@@ -131,6 +132,13 @@ public class ForgeHooksMixin {
                 }
             }
 
+            /*
+             * When the drop rate is not adjusted, we must consume all of the blocks
+             * from the inventory that will be placed. Therefore we must remove the
+             * prior reduction by the square of the scale for inventory saving purpose
+             */
+            if (!ActuallyServerConfig.beegBuildingDropRate) { scaledConsumption *= economyScale * economyScale; }
+
             // Calculate the blocks needed for this VS the blocks we actually have
             int maxConsume = OotilityNumbers.ceil(scaledConsumption);
             int actualConsume = actuallysize$originalCount - ret;
@@ -145,8 +153,10 @@ public class ForgeHooksMixin {
              * When placing a smaller block, it should still use
              * your larger grid's consumption to generate the
              * volume, we revert the calculation from the ratio above
+             *
+             * This only applies when the drop rate is adjusted
              */
-            if (placingScale != economyScale) {
+            if (placingScale != economyScale && ActuallyServerConfig.beegBuildingDropRate) {
                 actuallysize$totalConsume = placingScale * (actualConsume / maxConsume);
             }
         }

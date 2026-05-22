@@ -659,8 +659,8 @@ public class ASIEventExecutionListener {
     public static void OnBeegPickup(@NotNull EntityItemPickupEvent event) {
 
         // Must only catch serverside singe block place events
-        if (!ActuallyServerConfig.beegBuilding) {return;}
-        if (!ActuallyServerConfig.beegBuildingDropRate) {return;}
+        if (!ActuallyServerConfig.beegBuilding) { return; }
+        if (!ActuallyServerConfig.beegBuildingDropRate) { return; }
         ItemStack beegItem = event.getItem().getItem();
 
         // Not a participant block? I sleep

@@ -1,8 +1,6 @@
 package actually.portals.ActuallySize.mixin.holding.activation.menus;
 
-import actually.portals.ActuallySize.ActuallySizeInteractions;
 import actually.portals.ActuallySize.pickup.item.ASIPSHeldEntityItem;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
