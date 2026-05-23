@@ -249,7 +249,7 @@ public class ActuallyServerConfig {
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue BEEG_BUILDING_DROP_RATE = CONFIG_BUILDER
+    @NotNull private static final ForgeConfigSpec.BooleanValue REDUCED_BEEG_BUILDING_DROPS = CONFIG_BUILDER
             .comment(" ")
             .comment(" #### ----|    Beeg Building Drop Rate    |----")
             .comment(" Picking up scaled-up building blocks will multiply")
@@ -331,7 +331,7 @@ public class ActuallyServerConfig {
     public static boolean enableEntityPickup;
     public static boolean enableEntityHolding;
     public static boolean enableFreeSize;
-    public static boolean beegBuilding, beegBuildingDropRate;
+    public static boolean beegBuilding, reducedBeegBuildingDrops;
 
     public static boolean usePracticalSize;
     public static double scaleLimitRider;
@@ -373,7 +373,7 @@ public class ActuallyServerConfig {
         fearThreshold = FEAR_THRESHOLD.get();
         beegBuilding = BEEG_BUILDING.get();
         beegInventoryPower = BEEG_INVENTORIES.get();
-        beegBuildingDropRate = BEEG_BUILDING_DROP_RATE.get();
+        reducedBeegBuildingDrops = REDUCED_BEEG_BUILDING_DROPS.get();
 
         foodDuration = BEEGS_ARE_HUNGRY_DURATION.get();
         foodFrequency = BEEGS_ARE_HUNGRY_FREQUENCY.get();

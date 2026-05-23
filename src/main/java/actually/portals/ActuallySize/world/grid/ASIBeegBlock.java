@@ -20,7 +20,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -36,9 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This refers to a block that belongs to a beeg grid,
@@ -498,7 +495,7 @@ public class ASIBeegBlock {
             // Get limit from player inventory
             int limit;
             if (counts < 1) { limit = getScale() * getScale() * getScale(); } else {
-                if (ActuallyServerConfig.beegBuildingDropRate) { limit = counts * getScale() * getScale(); } else { limit = counts; }
+                if (ActuallyServerConfig.reducedBeegBuildingDrops) { limit = counts * getScale() * getScale(); } else { limit = counts; }
             }
 
             // Prepare indices
@@ -694,7 +691,7 @@ public class ASIBeegBlock {
             }
 
             // Bonus drop for the main drop
-            if (ActuallyServerConfig.beegBuildingDropRate) {
+            if (ActuallyServerConfig.reducedBeegBuildingDrops) {
                 int bonusCount = OotilityNumbers.ceil(mainDrop.getCount() * (1 + (getEffectiveScale() * 0.02D)));
                 int beegScale = OotilityNumbers.ceil(ASIUtilities.getEntityScale(player));
                 int idealCount = beegScale * beegScale * beegScale;

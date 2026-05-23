@@ -50,7 +50,7 @@ public abstract class BlockMixin implements BeegBreaker {
     @WrapOperation(method = "popResource(Lnet/minecraft/world/level/Level;Ljava/util/function/Supplier;Lnet/minecraft/world/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     private static boolean OnBeegItemDropped(Level instance, Entity entity, Operation<Boolean> original) {
 
-        if (actuallysize$beegBreaking && ActuallyServerConfig.beegBuildingDropRate) {
+        if (actuallysize$beegBreaking && ActuallyServerConfig.reducedBeegBuildingDrops) {
             if (actuallysize$beeg != null) {
 
                 ItemEntity asItemEntity = (ItemEntity) entity;

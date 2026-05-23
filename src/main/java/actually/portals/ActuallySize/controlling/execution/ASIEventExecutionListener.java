@@ -13,7 +13,6 @@ import actually.portals.ActuallySize.pickup.events.ASIPSFoodPropertiesEvent;
 import actually.portals.ActuallySize.pickup.events.ASIPSPickupToInventoryEvent;
 import actually.portals.ActuallySize.pickup.item.ASIPSHeldEntityItem;
 import actually.portals.ActuallySize.pickup.mixininterfaces.*;
-import actually.portals.ActuallySize.world.ASIWorldSystemManager;
 import actually.portals.ActuallySize.world.grid.ASIBeegBlock;
 import actually.portals.ActuallySize.world.grid.ASIWorldBlock;
 import actually.portals.ActuallySize.world.mixininterfaces.*;
@@ -660,7 +659,7 @@ public class ASIEventExecutionListener {
 
         // Must only catch serverside singe block place events
         if (!ActuallyServerConfig.beegBuilding) { return; }
-        if (!ActuallyServerConfig.beegBuildingDropRate) { return; }
+        if (!ActuallyServerConfig.reducedBeegBuildingDrops) { return; }
         ItemStack beegItem = event.getItem().getItem();
 
         // Not a participant block? I sleep

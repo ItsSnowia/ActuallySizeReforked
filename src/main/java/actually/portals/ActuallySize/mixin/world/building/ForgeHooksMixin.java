@@ -19,7 +19,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -137,7 +136,7 @@ public class ForgeHooksMixin {
              * from the inventory that will be placed. Therefore we must remove the
              * prior reduction by the square of the scale for inventory saving purpose
              */
-            if (!ActuallyServerConfig.beegBuildingDropRate) { scaledConsumption *= economyScale * economyScale; }
+            if (!ActuallyServerConfig.reducedBeegBuildingDrops) { scaledConsumption *= economyScale * economyScale; }
 
             // Calculate the blocks needed for this VS the blocks we actually have
             int maxConsume = OotilityNumbers.ceil(scaledConsumption);
@@ -156,7 +155,7 @@ public class ForgeHooksMixin {
              *
              * This only applies when the drop rate is adjusted
              */
-            if (placingScale != economyScale && ActuallyServerConfig.beegBuildingDropRate) {
+            if (placingScale != economyScale && ActuallyServerConfig.reducedBeegBuildingDrops) {
                 actuallysize$totalConsume = placingScale * (actualConsume / maxConsume);
             }
         }

@@ -23,7 +23,8 @@
     "holding.pose.PoseStackPoseMixin",
     "third.figura.FiguraInventoryScreenMixin",
     "third.figura.FiguraScissorFixMixin",
-    "world.SoundEngineMixin"
+    "world.SoundEngineMixin",
+    "world.inventory.GUIGraphicsMixin"
   ],
   "mixins": [
     "DamageSourceMixin",
