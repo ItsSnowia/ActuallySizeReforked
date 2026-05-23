@@ -3,6 +3,7 @@ package actually.portals.ActuallySize.mixin.world.inventory;
 import actually.portals.ActuallySize.ASIUtilities;
 import actually.portals.ActuallySize.ActuallyServerConfig;
 import actually.portals.ActuallySize.ActuallySizeInteractions;
+import actually.portals.ActuallySize.pickup.mixininterfaces.BeegCountable;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import gunging.ootilities.GungingOotilitiesMod.ootilityception.OotilityNumbers;
@@ -24,7 +25,8 @@ public class GUIGraphicsMixin {
 
         LocalPlayer local = Minecraft.getInstance().player;
         if (local == null) { original.call(pFont, pStack, pX, pY, null); return; }
-        if (local.isShiftKeyDown()) { original.call(pFont, pStack, pX, pY, null); return;}
+        BeegCountable asCountable = (BeegCountable) local;
+        if (!asCountable.actuallysize$isShowingBeegCount()) { original.call(pFont, pStack, pX, pY, null); return; }
 
         if (!ActuallyServerConfig.beegBuilding) { original.call(pFont, pStack, pX, pY, null); return; }
         if (ActuallyServerConfig.beegInventoryPower <= 1) { original.call(pFont, pStack, pX, pY, null); return; }

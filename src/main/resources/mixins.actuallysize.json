@@ -24,7 +24,10 @@
     "third.figura.FiguraInventoryScreenMixin",
     "third.figura.FiguraScissorFixMixin",
     "world.SoundEngineMixin",
-    "world.inventory.GUIGraphicsMixin"
+    "world.inventory.GUIGraphicsMixin",
+    "world.inventory.KeyboardInputMixin",
+    "world.inventory.KeyMappingMixin",
+    "world.inventory.LocalPlayerMixin"
   ],
   "mixins": [
     "DamageSourceMixin",
