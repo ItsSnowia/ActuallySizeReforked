@@ -207,7 +207,8 @@ public class ForgeHooksMixin {
              */
 
             int cons = actuallysize$totalConsume;
-            if (cons >= 64) { cons = -1; }
+            int naturalCons = 64 * OotilityNumbers.ceil(Math.pow(actuallysize$placingGrid.getScale(), ActuallyServerConfig.beegInventoryPower));
+            if (cons >= naturalCons) { cons = -1; }
             if (actuallysize$placer.getAbilities().instabuild) { cons = 32767; }
 
             // Find beeg block where it is placed
