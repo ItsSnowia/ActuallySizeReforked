@@ -144,6 +144,13 @@ public class ActuallyServerConfig {
     @NotNull private static final ForgeConfigSpec.IntValue BEEG_INVENTORY_POWER;
 
     /**
+     * Scales various attributes for a "smoother" gameplay when beeg
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.BooleanValue KIRA_SCALINGS;
+
+    /**
      * Whether the "Pickup Entity" system is enabled at all
      *
      * @since 1.0.0
@@ -282,6 +289,10 @@ public class ActuallyServerConfig {
                 .comment("Some entities are already small, and some are pretty big. For example, a ravager VS a chicken. For size calculations, it feels better to use bigger numbers for massive entities, I call this their 'practical size.'")
                 .define("usePracticalSize", true);
 
+        KIRA_SCALINGS = CONFIG_BUILDER.comment("§eScales various attributes for smoother giants")
+                .comment("Giants may feel too much, this option reduces various attributes for smoother gameplay for casual players. Personally I, Portals, a Terraria player, prefer it when giants are absolutely cracked with super speed and super reach tho LOL.")
+                .define("kiraScalings", true);
+
         SCALE_LIMIT_RIDE = CONFIG_BUILDER.comment("§eMaximum rider size compared to mount")
                 .comment("The relative scale (ex. 2x) upper limit to riding another entity. If you are this much bigger, you won't be able to ride the other. Prevents giants from riding normal horses and such, but there will be no problem riding giant horses. Size matters!")
                 .defineInRange("ridingScaleLimit", 2D, 0D, Double.MAX_VALUE);
@@ -299,6 +310,7 @@ public class ActuallyServerConfig {
     public static boolean enableFreeSize;
     public static boolean beegBuilding, reducedBeegBuildingDrops;
 
+    public static boolean kiraScalings;
     public static boolean usePracticalSize;
     public static double scaleLimitRider;
     public static boolean tankyBeegs;
@@ -351,6 +363,7 @@ public class ActuallyServerConfig {
         largestCranker = LARGEST_CRANKER.get();
         tiniestCranker = TINIEST_CRANKER.get();
         waterwheelCranker = WATER_WHEEL_CRANKER.get();
+        kiraScalings = KIRA_SCALINGS.get();
     }
     //endregion
 }

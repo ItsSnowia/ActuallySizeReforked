@@ -1,5 +1,7 @@
 package actually.portals.ActuallySize.compatibilities.pehkui;
 
+import actually.portals.ActuallySize.ASIUtilities;
+import actually.portals.ActuallySize.ActuallyServerConfig;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import virtuoel.pehkui.api.ScaleData;
@@ -53,6 +55,24 @@ public class ASIPehkuiCompatibility {
      */
     public static void SetEntityScaleInstant(@NotNull Entity mob, double scale) {
         SetEntityScaleInstant(mob, ScaleTypes.BASE, scale);
+
+        /*
+         * Kira-Brand Adjustments
+         */
+        if (!ActuallyServerConfig.kiraScalings) { return; }
+
+        // Kira Scalings only apply to beegs
+        if (scale <= 1) {
+            SetEntityScaleInstant(mob, ScaleTypes.MOTION, 1);
+            SetEntityScaleInstant(mob, ScaleTypes.JUMP_HEIGHT, 1);
+            SetEntityScaleInstant(mob, ScaleTypes.BLOCK_REACH, 1);
+            SetEntityScaleInstant(mob, ScaleTypes.ENTITY_REACH, 1); }
+
+        // Real Kira-Adjustments
+        SetEntityScaleInstant(mob, ScaleTypes.MOTION, ASIUtilities.beegBalanceResist(scale, 1, 0.5));
+        SetEntityScaleInstant(mob, ScaleTypes.JUMP_HEIGHT, ASIUtilities.beegBalanceEnhance(scale, 2, 1));
+        SetEntityScaleInstant(mob, ScaleTypes.BLOCK_REACH, ASIUtilities.beegBalanceResist(scale, 1, 0.7));
+        SetEntityScaleInstant(mob, ScaleTypes.ENTITY_REACH, ASIUtilities.beegBalanceResist(scale, 1, 0.6));
     }
 
     /**
