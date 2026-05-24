@@ -4,15 +4,13 @@ import actually.portals.ActuallySize.ASIUtilities;
 import actually.portals.ActuallySize.ActuallyServerConfig;
 import actually.portals.ActuallySize.ActuallySizeInteractions;
 import actually.portals.ActuallySize.world.mixininterfaces.PreferentialOptionable;
+import actually.portals.ActuallySize.world.preferences.events.ASIApplyPreferredSizeEvent;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.RemoteChatSession;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.network.NetworkEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -130,6 +128,11 @@ public class ASINSPreferredSize {
      * @author Actually Portals
      */
     public void applyTo(@NotNull ServerPlayer someone) {
+
+        ASIApplyPreferredSizeEvent playerEvent = new ASIApplyPreferredSizeEvent(someone, this);
+        boolean canceled = MinecraftForge.EVENT_BUS.post(playerEvent);
+        if (canceled) { return; }
+
         double pref = toDouble();
 
         // Formalities~
@@ -184,8 +187,6 @@ public class ASINSPreferredSize {
         return ret;
     }
 
-
-
     /**
      * The server will take a note of the current preferred scale
      * of this player, updating the static table.
@@ -207,79 +208,8 @@ public class ASINSPreferredSize {
             if (!optionable.actuallysize$isPreferredOptionsApplied(toDouble())) { applyTo(player); }
 
             // Apply those settings
-            SetPreferredSize(player, this);
+            ActuallySizeInteractions.WORLD_SYSTEM.PREFS_MANAGER.SetPreferredSize(player, this);
         });
         contextSupplier.get().setPacketHandled(true);
     }
-
-    //region As Manager
-    /**
-     * @param who The player to set their preferred size.
-     * @param scale The scale they are said to prefer
-     *
-     * @since 1.0.0
-     * @author Actually Portals
-     */
-    public static void SetPreferredSize(@NotNull ServerPlayer who, @NotNull ASINSPreferredSize scale) { SetPreferredSize(GetEffectiveUUID(who), scale); }
-
-    /**
-     * @param who The player who you seek their preferred size.
-     *
-     * @return The known preferred size of this player.
-     *
-     * @since 1.0.0
-     * @author Actually Portals
-     */
-    @Nullable public static ASINSPreferredSize GetPreferredSize(@NotNull ServerPlayer who) { return GetPreferredSize(GetEffectiveUUID(who)); }
-
-    /**
-     * @param who The player whose UUID you seek
-     *
-     * @return The UUID that is used, for this player, by the Preferred Size system.
-     *
-     * @since 1.0.0
-     * @author Actually Portals
-     */
-    @NotNull public static UUID GetEffectiveUUID(@NotNull ServerPlayer who) {
-
-        // If there are valid sessions, those are good enough for this purpose
-        RemoteChatSession session = who.getChatSession();
-        if (session != null) { return session.sessionId(); }
-
-        // If not, we must get creative
-        return who.getUUID();
-    }
-
-    /**
-     * @param who The player to set their preferred size.
-     * @param scale The scale they are said to prefer
-     *
-     * @since 1.0.0
-     * @author Actually Portals
-     */
-    public static void SetPreferredSize(@NotNull UUID who, @NotNull ASINSPreferredSize scale) {
-        preferredSizes.put(who, scale);
-    }
-
-    /**
-     * @param who The UUID of who you seek their preferred size.
-     *
-     * @return The known preferred size of this player.
-     *
-     * @since 1.0.0
-     * @author Actually Portals
-     */
-    @Nullable public static ASINSPreferredSize GetPreferredSize(@NotNull UUID who) {
-        return preferredSizes.get(who);
-    }
-
-    /**
-     * Not so much as a network packet, but as the system that
-     * keeps track of the Preferred Sizes of player, the collection
-     * to store everyone's preferred size
-     *
-     * @since 1.0.0
-     */
-    @NotNull public static final HashMap<UUID, ASINSPreferredSize> preferredSizes = new HashMap<>();
-    //endregion
 }

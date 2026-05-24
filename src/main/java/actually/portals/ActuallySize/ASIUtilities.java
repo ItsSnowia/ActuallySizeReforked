@@ -2,6 +2,7 @@ package actually.portals.ActuallySize;
 
 import actually.portals.ActuallySize.pickup.mixininterfaces.RenderNormalizable;
 import actually.portals.ActuallySize.compatibilities.pehkui.ASIPehkuiCompatibility;
+import actually.portals.ActuallySize.world.preferences.events.ASISetScaleEvent;
 import gunging.ootilities.GungingOotilitiesMod.ootilityception.OotilityNumbers;
 import gunging.ootilities.GungingOotilitiesMod.ootilityception.OotilityVectors;
 import net.minecraft.core.particles.ParticleTypes;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -253,7 +255,14 @@ public class ASIUtilities {
      * @author Actually Portals
      */
     public static void setEntityScale(@NotNull Entity entity, double scale) {
-        ASIPehkuiCompatibility.SetEntityScaleInstant(entity, scale);
+
+        // Proc event
+        ASISetScaleEvent event = new ASISetScaleEvent(entity, scale);
+        boolean canceled = MinecraftForge.EVENT_BUS.post(event);
+        if (canceled) { return; }
+
+        // Adjust scale
+        ASIPehkuiCompatibility.SetEntityScaleInstant(entity, event.getScale());
     }
 
     /**

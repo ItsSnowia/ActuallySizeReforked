@@ -82,7 +82,7 @@ public class ASIEventExecutionListener {
             optionable.actuallysize$setPreferredOptionsApplied(-1);
 
             // Get prefs
-            ASINSPreferredSize prefs = ASINSPreferredSize.GetPreferredSize(player);
+            ASINSPreferredSize prefs = ActuallySizeInteractions.WORLD_SYSTEM.PREFS_MANAGER.GetPreferredSize(player);
             if (prefs != null) {
 
                 // Apply prefs instant

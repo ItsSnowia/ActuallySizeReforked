@@ -10,6 +10,7 @@ import actually.portals.ActuallySize.world.blocks.BlockItemRegistry;
 import actually.portals.ActuallySize.world.blocks.furniture.ASIBeegFurnishing;
 import actually.portals.ActuallySize.world.blocks.furniture.ASIBeegFurnitureRegistryEvent;
 import actually.portals.ActuallySize.world.blocks.furniture.ASIBeegTorch;
+import actually.portals.ActuallySize.world.preferences.ASIPreferencesManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
@@ -87,6 +88,14 @@ public class ASIWorldSystemManager {
         registerBeegFurnishings();
         standardBeegItems();
     }
+
+    /**
+     * The Manager for the system that allows you
+     * to pickup entities smaller than you.
+     *
+     * @since 1.0.0
+     */
+    public ASIPreferencesManager PREFS_MANAGER = new ASIPreferencesManager();
 
     //region Beeg Building Furniture
     /**
