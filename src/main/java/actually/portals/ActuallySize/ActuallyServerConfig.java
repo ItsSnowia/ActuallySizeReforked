@@ -18,313 +18,279 @@ public class ActuallyServerConfig {
     //region Config Parameters
 
     /**
-     * The Forge API to build configuration settings
+     * Whether the "Pickup Entity" system is enabled at all
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.Builder CONFIG_BUILDER = new ForgeConfigSpec.Builder();
+    @NotNull private static final ForgeConfigSpec.BooleanValue USE_PRACTICAL_SIZE;
 
     /**
      * Whether the "Pickup Entity" system is enabled at all
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue USE_PRACTICAL_SIZE = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### --------------------------------------------------")
-            .comment(" #### Global Systems - General ASI Configuration")
-            .comment(" #### --------------------------------------------------")
-            .comment(" ")
-            .comment(" #### ----|    Practical Size    |----")
-            .comment(" Some entities are already small, and some are pretty big. For example,")
-            .comment(" a ravager VS a chicken. For size calculations, it feels better to use")
-            .comment(" bigger numbers for massive entities, I call this their 'practical size.'")
-            .define("usePracticalSize", true);
-
-    /**
-     * Whether the "Pickup Entity" system is enabled at all
-     *
-     * @since 1.0.0
-     */
-    @NotNull private static final ForgeConfigSpec.BooleanValue ENABLE_ENTITY_PICKUP = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Allow Pickup    |----")
-            .comment(" Enables the ability to pick up entities as items, if you")
-            .comment(" are big enough to hold them in your mainhand or offhand.")
-            .comment(" To pick up players, the Allow Hold must also be enabled.")
-            .define("allowPickup", true);
+    @NotNull private static final ForgeConfigSpec.BooleanValue ENABLE_ENTITY_PICKUP;
 
     /**
      * Whether the "Holding Entity" system is enabled at all
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue ENABLE_ENTITY_HOLDING = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Allow Hold    |----")
-            .comment(" When holding an entity item picked up via the pickup system,")
-            .comment(" they will also be alive in the world and able to interact live.")
-            .comment(" Required to pickup players.")
-            .define("allowHold", true);
+    @NotNull private static final ForgeConfigSpec.BooleanValue ENABLE_ENTITY_HOLDING;
 
     /**
      * The default size for beegs, clients that enabled it in their config will join like this.
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue BEEG_SIZE = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### --------------------------------------------------")
-            .comment(" #### Client Services - These affect players' client configs")
-            .comment(" #### --------------------------------------------------")
-            .comment(" ")
-            .comment(" #### ----|    Beeg Size    |----")
-            .comment(" Players may indicate they prefer to be beeg, this is the")
-            .comment(" size they will have by default when joining and respawning.")
-            .comment(" Set to '1' to disable this feature.")
-            .defineInRange("beegSize", 8, 0.05, 25);
+    @NotNull private static final ForgeConfigSpec.DoubleValue BEEG_SIZE;
 
     /**
      * The default size for tinies, clients that enabled it in their config will join like this.
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue TINY_SIZE = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Tiny Size    |----")
-            .comment(" Players may indicate they prefer to be tiny, this is the")
-            .comment(" size they will have by default when joining and respawning.")
-            .comment(" Set to '1' to disable this feature.")
-            .defineInRange("tinySize", 0.13, 0.05, 25);
+    @NotNull private static final ForgeConfigSpec.DoubleValue TINY_SIZE;
 
     /**
      * The default size for tinies, clients that enabled it in their config will join like this.
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue FREE_SIZE = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Allow Free Size    |----")
-            .comment(" Gives players the option to freely choose whatever scale they want")
-            .comment(" between 0.05x and 25x, to have as their default scale when joining.")
-            .define("allowFreeSize", true);
+    @NotNull private static final ForgeConfigSpec.BooleanValue FREE_SIZE;
 
     /**
      * If beegs receive less damage and knockback from all sources
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue BEEGS_ARE_TANKY = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### --------------------------------------------------")
-            .comment(" #### Combat Settings - Rampage of beegs over tinies lol")
-            .comment(" #### --------------------------------------------------")
-            .comment(" ")
-            .comment(" #### ----|    Tanky Beegs    |----")
-            .comment(" Beegs will receive less damage from most sources the bigger they are. ")
-            .comment(" In combat damage, larger attackers suffer less damage reduction. ")
-            .comment(" Knockback is also reduced just for the fact of being beeg. ")
-            .define("beegsAreTanky", true);
+    @NotNull private static final ForgeConfigSpec.BooleanValue BEEGS_ARE_TANKY;
 
     /**
      * If beegs deal more melee damage, unless they crouch to avoid hitting too hard.
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue BEEGS_ARE_STRONG = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Strong Beegs    |----")
-            .comment(" Beegs will deal more damage in melee attacks to entities smaller than them. ")
-            .comment(" You may crouch while punching unarmed to disable this for that one punch, so it will be a normal vanilla punch. ")
-            .comment(" Also affects knockback between different-sized combatants. ")
-            .define("beegsAreStrong", true);
+    @NotNull private static final ForgeConfigSpec.BooleanValue BEEGS_ARE_STRONG;
 
     /**
      * If tinies receive more damage from all sources (does not affect knockback)
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue TINIES_ARE_DELICATE = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Delicate Tinies    |----")
-            .comment(" Tinies will receive more damage from most sources the smaller they are. ")
-            .comment(" In combat damage, smaller attackers get less damage amplification. ")
-            .comment(" When punched by a player, if that player is crouching, their damage is not amplified at all. ")
-            .comment(" The [beegsAreStrong] option takes precedence in combat (so that only [beegsAreStrong] is applied). ")
-            .define("tiniesAreDelicate", true);
+    @NotNull private static final ForgeConfigSpec.BooleanValue TINIES_ARE_DELICATE;
 
     /**
      * If beegs deal more melee damage, unless they crouch to avoid hitting too hard.
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue SIZE_DAMAGE_LIMIT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Size Damage Amplifier    |----")
-            .comment(" If you would take more damage because you are small, the maximum multiplier. ")
-            .comment(" If you would deal bonus damage due to being beeg, the maximum multiplier. ")
-            .defineInRange("sizeDamageAmplifier", 25D, 1D, Double.MAX_VALUE);
+    @NotNull private static final ForgeConfigSpec.DoubleValue SIZE_DAMAGE_LIMIT;
 
     /**
      * The relative scale between a player and an entity so that the player can ride the entity
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue SCALE_LIMIT_RIDE = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### --------------------------------------------------")
-            .comment(" #### Miscellaneous Settings - Minor systems and fixes")
-            .comment(" #### --------------------------------------------------")
-            .comment(" ")
-            .comment(" #### ----|    Riding Scale Limit    |----")
-            .comment(" The relative scale (ex. 2x) upper limit to riding another entity.")
-            .comment(" If you are this much bigger, you won't be able to ride the other.")
-            .comment(" Prevents giants from riding normal horses and such, but there will")
-            .comment(" be no problem riding giant horses. Size matters!")
-            .defineInRange("ridingScaleLimit", 2D, 0D, Double.MAX_VALUE);
+    @NotNull private static final ForgeConfigSpec.DoubleValue SCALE_LIMIT_RIDE;
 
     /**
      * Whether food is nerfed for giants and buffed for tinies. Also affects eat animation time.
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue BEEGS_ARE_HUNGRY = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Beegs are Hungry    |----")
-            .comment(" This will make food a lot less effective the bigger")
-            .comment(" you are, and feed and saturate more if you are small.")
-            .comment(" Also results in beegs eating faster and tinies taking")
-            .comment(" longer to eat, depending on the nutritional value of food.")
-            .comment(" (silly tinies will prefer berries, with low nutrition hehe)")
-            .define("beegsAreHungry", true);
+    @NotNull private static final ForgeConfigSpec.BooleanValue BEEGS_ARE_HUNGRY;
 
     /**
      * Extends the duration of effects granted upon consumption of held entities
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue BEEGS_ARE_HUNGRY_DURATION = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" This is a multiplier to increase or decrease effects")
-            .comment(" granted when beegs eat animals (such as strength from")
-            .comment(" horses) or other mobs. Disables this feature when ZERO")
-            .defineInRange("foodEntityDurationMultiplier", 1D,0D, Double.MAX_VALUE);
+    @NotNull private static final ForgeConfigSpec.DoubleValue BEEGS_ARE_HUNGRY_DURATION;
+
     /**
      * Increases the frequency of effects granted upon consumption of held entities
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue BEEGS_ARE_HUNGRY_FREQUENCY = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" This is a multiplier to how often effects are granted")
-            .comment(" by eating live animals. Does not affect boss entities.")
-            .defineInRange("foodEntityFrequencyMultiplier", 1D,0D, Double.MAX_VALUE);
+    @NotNull private static final ForgeConfigSpec.DoubleValue BEEGS_ARE_HUNGRY_FREQUENCY;
+
     /**
      * At what scale does your size cause panic on monsters
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue FEAR_THRESHOLD = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Fear    |----")
-            .comment(" This is the scale where monsters begin to fear you")
-            .comment(" if you are a beeg, some may even panic. For example,")
-            .comment(" 4.0 means monsters fear giants 4x bigger than them")
-            .defineInRange("fearThreshold", 4D,1D, Double.MAX_VALUE);
+    @NotNull private static final ForgeConfigSpec.DoubleValue FEAR_THRESHOLD;
+
     /**
      * If beegs will build in a grid their scale
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue BEEG_BUILDING = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Beeg Building    |----")
-            .comment(" Enables giants to build and break blocks in a grid")
-            .comment(" their size, so an 8X beeg will break in 8x8x8. This")
-            .comment(" also nerfs block pickup by your scale squared and")
-            .comment(" nerfs block placing by a factor of your scale. ")
-            .define("beegBuilding", true);
+    @NotNull private static final ForgeConfigSpec.BooleanValue BEEG_BUILDING;
+
     /**
      * Allows to disable block ratio fixes
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue REDUCED_BEEG_BUILDING_DROPS = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Beeg Building Drop Rate    |----")
-            .comment(" Picking up scaled-up building blocks will multiply")
-            .comment(" them in your inventory, but also picking up blocks")
-            .comment(" smaller than your scale will decrease them.")
-            .comment(" This works to balance BEEG BUILDING option, because")
-            .comment(" giants break and place down TONS of blocks.")
-            .define("beegBuildingDropRate", false);
+    @NotNull private static final ForgeConfigSpec.BooleanValue REDUCED_BEEG_BUILDING_DROPS;
 
     /**
      * If beegs receive less damage and knockback from all sources
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.IntValue BEEG_INVENTORIES = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Beeg Inventories    |----")
-            .comment(" Increases the capacity of slots in giant player")
-            .comment(" inventories, allowing them to hold a LOT more")
-            .comment(" blocks than usual. The number specified here is")
-            .comment(" how many times the scale increases inventory cap.")
-            .comment(" At 0, scale has no effect; at 1, it is a linear")
-            .comment(" increase; at the default of 3 it is volumetric")
-            .defineInRange("beegInventoryPower", 3,0, 3);
+    @NotNull private static final ForgeConfigSpec.IntValue BEEG_INVENTORY_POWER;
 
     /**
      * Whether the "Pickup Entity" system is enabled at all
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue TINIEST_CRANKER = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### --------------------------------------------------")
-            .comment(" #### Create ASI Compatibility")
-            .comment(" #### --------------------------------------------------")
-            .comment(" ")
-            .comment(" #### ----|    Tiniest Hand-Cranker    |----")
-            .comment(" The smallest size you can be and still be able to use")
-            .comment(" the hand crank to produce power. The power output and")
-            .comment(" speed will be reduced the tinier you are. ")
-            .defineInRange("tiniestCranker", 0.4, 0, 1);
+    @NotNull private static final ForgeConfigSpec.DoubleValue TINIEST_CRANKER;
 
     /**
      * Whether the "Pickup Entity" system is enabled at all
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue LARGEST_CRANKER = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Largest Hand-Cranker    |----")
-            .comment(" The biggest size at which the hand crank can be used,")
-            .comment(" after which, you may accidentally break it because you")
-            .comment(" are too strong to rotate the tiny thing. The power output")
-            .comment(" will still be increased the bigger you are. ")
-            .defineInRange("largestCranker", 6, 1, Double.MAX_VALUE);
+    @NotNull private static final ForgeConfigSpec.DoubleValue LARGEST_CRANKER;
 
     /**
      * Whether the "Pickup Entity" system is enabled at all
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue WATER_WHEEL_CRANKER = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Waterwheel Hand-Cranker    |----")
-            .comment(" At what size is a waterwheel a normal hand crank to you?")
-            .comment(" From then, it will use the minimum and maximum crankshaft limits above")
-            .comment(" to decide how it gets buffed or nerfed based on your size.")
-            .defineInRange("waterwheelCranker", 5, 1, Double.MAX_VALUE);
+    @NotNull private static final ForgeConfigSpec.DoubleValue WATER_WHEEL_CRANKER;
 
     /**
      * The config builder itself
      *
      * @since 1.0.0
      */
-    @NotNull static final ForgeConfigSpec SPEC = CONFIG_BUILDER.build();
+    @NotNull static final ForgeConfigSpec SPEC;
+
+    static {
+        ForgeConfigSpec.Builder CONFIG_BUILDER = new ForgeConfigSpec.Builder();
+
+        //region Gameplay
+        CONFIG_BUILDER.push("general");
+
+        CONFIG_BUILDER.push("pickup");
+        ENABLE_ENTITY_PICKUP = CONFIG_BUILDER.comment("§eAllows picking up entities as items")
+                .comment("Enables the ability to pick up entities as items, if you are big enough to hold them in your mainhand or offhand. To pick up players, the Allow Hold must also be enabled.")
+                .define("allowPickup", true);
+
+        ENABLE_ENTITY_HOLDING = CONFIG_BUILDER.comment("§eAllows holding live entities")
+                .comment("When picking up an entity as an item, holding this item in your hand will also spawn the entity in your hand in the world. Required to pickup players.")
+                .define("allowHold", true);
+        CONFIG_BUILDER.pop();
+
+        CONFIG_BUILDER.push("sizes");
+        BEEG_SIZE = CONFIG_BUILDER.comment("§eThe size of beegs")
+                .comment("Players may indicate they prefer to be beeg, this is the size they will have by default when joining and respawning. Set to '1' to disable this feature.")
+                .defineInRange("beegSize", 8, 0.05, 25);
+
+        TINY_SIZE = CONFIG_BUILDER.comment("§eThe size of tinies")
+                .comment("Players may indicate they prefer to be tiny, this is the size they will have by default when joining and respawning. Set to '1' to disable this feature.")
+                .defineInRange("tinySize", 0.13, 0.05, 25);
+
+        FREE_SIZE = CONFIG_BUILDER.comment("§ePlayers may choose a size")
+                .comment("Gives players the option to freely choose whatever scale they want between 0.05x and 25x, to have as their default scale when joining.")
+                .define("allowFreeSize", true);
+        CONFIG_BUILDER.pop();
+
+        CONFIG_BUILDER.pop();
+        //endregion
+
+        //region Gameplay
+        CONFIG_BUILDER.push("gameplay");
+
+        CONFIG_BUILDER.push("building");
+        BEEG_BUILDING = CONFIG_BUILDER.comment("§eGiants will build in blocks their size")
+                .comment("Enables giants to build and break blocks in a scaled grid (so an 8X beeg will break in 8x8x8). Crouch to build at half this scale (per the example, 4x4x4)")
+                .define("beegBuilding", true);
+
+        BEEG_INVENTORY_POWER = CONFIG_BUILDER.comment("§eIncreases max stack size for giants")
+                .comment("The max stack size of all items in the inventory of giants is increased by their scale. The max stack of building blocks is scaled to this power of their scale. Set to 0 to disable this system.")
+                .defineInRange("beegInventoryPower", 3,0, 3);
+
+        REDUCED_BEEG_BUILDING_DROPS = CONFIG_BUILDER.comment("§eReduces blocks picked up by giants")
+                .comment("When a 10X giant picks up a ton of blocks, they will only pickup 1% of the total. This balances out because placing one block down will actually place down 100 blocks. Therefore, 100X less inventory space is used when mining down a mountain.")
+                .comment("Obsolete, maybe use when there are incompatibilities with [Beeg Inventory Power].")
+                .define("stochasticDropRates", false);
+        CONFIG_BUILDER.pop();
+
+        CONFIG_BUILDER.push("combat");
+        BEEGS_ARE_TANKY = CONFIG_BUILDER.comment("§eReduces all damage taken by beegs")
+                .comment("Beegs will receive less damage from most sources the bigger they are. However, in combat, larger attackers suffer less damage reduction. Knockback is also reduced just for the fact of being beeg. ")
+                .define("beegsAreTanky", true);
+
+        BEEGS_ARE_STRONG = CONFIG_BUILDER.comment("§eIncreases damage dealt by beegs")
+                .comment("Beegs will deal more damage in melee attacks to entities smaller than them.  You may crouch while punching unarmed to disable this for that one punch, so it will be a normal vanilla punch. Also affects knockback between different-sized combatants. ")
+                .define("beegsAreStrong", true);
+
+        TINIES_ARE_DELICATE = CONFIG_BUILDER.comment("§eIncreases the damage taken by tinies")
+                .comment("Tinies will receive more damage from most sources the smaller they are. However, in combat, smaller attackers get less damage amplification. When punched by a player, if that player is crouching, their damage is not amplified at all. The [Beegs Are Strong] option takes precedence in combat (so that only [Beegs Are Strong] is applied). ")
+                .define("tiniesAreDelicate", true);
+
+        SIZE_DAMAGE_LIMIT = CONFIG_BUILDER.comment("§eCombat Damage amplification for giants")
+                .comment("If you would take more damage because you are small, the maximum multiplier. If you would deal bonus damage due to being beeg, the maximum multiplier. ")
+                .defineInRange("sizeDamageAmplifier", 25D, 1D, Double.MAX_VALUE);
+
+        FEAR_THRESHOLD = CONFIG_BUILDER.comment("§eMonsters will fear giants")
+                .comment("This is the scale where monsters begin to fear you if you are a beeg, some may even panic. For example, 4.0 means monsters fear giants 4x bigger than them")
+                .defineInRange("fearThreshold", 4D,1D, Double.MAX_VALUE);
+        CONFIG_BUILDER.pop();
+
+        CONFIG_BUILDER.push("food");
+        BEEGS_ARE_HUNGRY = CONFIG_BUILDER.comment("§eFood gives less nutrition to giants")
+                .comment("This will make food a lot less effective the bigger you are, and feed and saturate more if you are small. Also results in beegs eating faster and tinies taking longer to eat, depending on the nutritional value of food (tinies should prefer berries, very nourishing to them hehe)")
+                .define("beegsAreHungry", true);
+
+        BEEGS_ARE_HUNGRY_DURATION = CONFIG_BUILDER.comment("§eMultiplies foodie effect duration")
+                .comment("This is a multiplier to increase or decrease effects granted when beegs eat animals (such as strength from horses) or other mobs. Disables this feature when ZERO")
+                .defineInRange("effectDurationMultiplier", 1D,0D, Double.MAX_VALUE);
+
+        BEEGS_ARE_HUNGRY_FREQUENCY = CONFIG_BUILDER.comment("§eMultiplies foodie effect chance")
+                .comment("This is a multiplier to how often effects are granted by eating live animals (such as night vision from glow squids). Does not affect boss entities.")
+                .defineInRange("effectChanceMultiplier", 1D,0D, Double.MAX_VALUE);
+        CONFIG_BUILDER.pop();
+
+        CONFIG_BUILDER.push("create");
+        TINIEST_CRANKER = CONFIG_BUILDER.comment("§eTinies cannot use hand cranks")
+                .comment("The smallest size you can be and still be able to use the hand crank to produce power. The power output and speed will be reduced the tinier you are. ")
+                .defineInRange("tiniestCranker", 0.4, 0, 1);
+
+        LARGEST_CRANKER = CONFIG_BUILDER.comment("§eBeegs break hand cranks")
+                .comment("The biggest size at which the hand crank can be used, after which, you may accidentally break it because you are too strong to rotate the tiny thing. The power output will still be increased the bigger you are. To disable this, just set it to an absurdly large scale (such as 1000x)")
+                .defineInRange("largestCranker", 6, 1, Double.MAX_VALUE);
+
+        WATER_WHEEL_CRANKER = CONFIG_BUILDER.comment("§eBeegs hand-crank L. Waterwheels")
+                .comment("At what size is a large waterwheel a normal hand crank to you? From then, it will use the minimum and maximum crankshaft limits to decide how it gets buffed or nerfed based on your size.")
+                .defineInRange("waterwheelCranker", 5, 1, Double.MAX_VALUE);
+        CONFIG_BUILDER.pop();
+
+        CONFIG_BUILDER.pop();
+        //endregion
+
+        //region Advanced
+        CONFIG_BUILDER.push("advanced");
+
+        USE_PRACTICAL_SIZE = CONFIG_BUILDER.comment("§eSize math is influenced by hitbox size")
+                .comment("Some entities are already small, and some are pretty big. For example, a ravager VS a chicken. For size calculations, it feels better to use bigger numbers for massive entities, I call this their 'practical size.'")
+                .define("usePracticalSize", true);
+
+        SCALE_LIMIT_RIDE = CONFIG_BUILDER.comment("§eMaximum rider size compared to mount")
+                .comment("The relative scale (ex. 2x) upper limit to riding another entity. If you are this much bigger, you won't be able to ride the other. Prevents giants from riding normal horses and such, but there will be no problem riding giant horses. Size matters!")
+                .defineInRange("ridingScaleLimit", 2D, 0D, Double.MAX_VALUE);
+
+        CONFIG_BUILDER.pop();
+        //endregion
+
+        SPEC = CONFIG_BUILDER.build();
+    }
     //endregion
 
     //region Config Object
@@ -372,7 +338,7 @@ public class ActuallyServerConfig {
         hungryBeegs = BEEGS_ARE_HUNGRY.get();
         fearThreshold = FEAR_THRESHOLD.get();
         beegBuilding = BEEG_BUILDING.get();
-        beegInventoryPower = BEEG_INVENTORIES.get();
+        beegInventoryPower = BEEG_INVENTORY_POWER.get();
         reducedBeegBuildingDrops = REDUCED_BEEG_BUILDING_DROPS.get();
 
         foodDuration = BEEGS_ARE_HUNGRY_DURATION.get();

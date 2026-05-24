@@ -18,220 +18,215 @@ import org.jetbrains.annotations.Nullable;
 public class ActuallyClientConfig {
 
     //region Config Parameters
-    /**
-     * The Forge API to build configuration settings
-     *
-     * @since 1.0.0
-     */
-    @NotNull
-    private static final ForgeConfigSpec.Builder CONFIG_BUILDER = new ForgeConfigSpec.Builder();
 
     /**
      * If this player prefers to be beeg
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue PREFERRED_BEEG = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### --------------------------------------------------")
-            .comment(" #### Global Preferences - General ASI Configuration")
-            .comment(" #### --------------------------------------------------")
-            .comment(" ")
-            .comment(" #### ----|    Prefers to be Big    |----")
-            .comment(" For servers that have a beeg size configured, you will")
-            .comment(" spawn beeg by default without having to do anything else.")
-            .comment(" Also affects the size at which you respawn.")
-            .define("preferablyBeeg", false);
+    @NotNull private static final ForgeConfigSpec.BooleanValue PREFERRED_BEEG;
 
     /**
      * If this player prefers to be smol
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue PREFERRED_TINY = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Prefers to be Smol    |----")
-            .comment(" For servers that have a tiny size configured, you will")
-            .comment(" spawn tiny by default without having to do anything else.")
-            .comment(" Also affects the size at which you respawn.")
-            .define("preferablySmol", false);
+    @NotNull private static final ForgeConfigSpec.BooleanValue PREFERRED_TINY;
 
     /**
      * If this player prefers to be smol
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.DoubleValue PREFERRED_SCALE = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Preferred Scale    |----")
-            .comment(" For servers that allow you to freely choose your")
-            .comment(" size, what scale do you want to be by default?")
-            .comment(" Also affects the size at which you respawn.")
-            .comment(" Set to '1' to disable this feature.")
-            .defineInRange("preferredScale", 1, 0.05, 25);
+    @NotNull private static final ForgeConfigSpec.DoubleValue PREFERRED_SCALE;
 
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HEAD_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### --------------------------------------------------")
-            .comment(" #### Hold Slots - Where do you want to hold tinies?")
-            .comment(" #### ")
-            .comment(" #### I personally could not decide, for example, if holding the item")
-            .comment(" #### of someone should let them sit on your shoulder instead of your")
-            .comment(" #### hand, or something like that. Then you can choose either!")
-            .comment(" #### --------------------------------------------------")
-            .comment(" ")
-            .comment(" #### ----|    Helmet Armor Slot    |----")
-            .comment(" When holding an entity in your head slot, where does it show up on your player? ")
-            .define("headHold", "actuallysize:hat");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HEAD_HOLD_POINT;
 
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> CHEST_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Chestplate Armor Slot    |----")
-            .comment(" When holding an entity in your chestplate slot, where does it show up on your player? ")
-            .define("chestHold", "actuallysize:chest_pocket");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> CHEST_HOLD_POINT;
 
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> LEGS_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Leggings Armor Slot    |----")
-            .comment(" When holding an entity in your leggings slot, where does it show up on your player? ")
-            .define("legsHold", "actuallysize:hoodie_pocket");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> LEGS_HOLD_POINT;
 
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> FEET_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Boots Armor Slot    |----")
-            .comment(" When holding an entity in your boots slot, where does it show up on your player? ")
-            .define("bootsHold", "actuallysize:left_boot");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> FEET_HOLD_POINT;
 
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> MAINHAND_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Selected hotbar Slot    |----")
-            .comment(" When holding an entity in your main hand, where does it show up on your player? ")
-            .define("mainhandHold", "actuallysize:right_hand");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> MAINHAND_HOLD_POINT;
 
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> OFFHAND_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Offhand Slot    |----")
-            .comment(" When holding an entity in your offhand, where does it show up on your player? ")
-            .define("offhandHold", "actuallysize:left_fist");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> OFFHAND_HOLD_POINT;
 
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> CURSOR_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    GUI Cursor Slot    |----")
-            .comment(" While you move around an entity in your inventory, where does it show up on your player? ")
-            .define("cursorHold", "actuallysize:pinch");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> CURSOR_HOLD_POINT;
 
     /**
      * Honestly holding animals in the same slots you hold players just feels off sometimes (real).
      *
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.BooleanValue ONLY_PLAYERS = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Only For Players    |----")
-            .comment(" When this is enabled, these custom hold points will only apply when holding other players. ")
-            .comment(" All other mobs will be held in the default slots while this is enabled.")
-            .define("onlyForPlayers", true);
+    @NotNull private static final ForgeConfigSpec.BooleanValue ONLY_PLAYERS;
 
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR1_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### --------------------------------------------------")
-            .comment(" #### Hotbar Slots - More Hold Slots~")
-            .comment(" #### ")
-            .comment(" #### These are only engaged when holding players you have")
-            .comment(" #### in your hotbar. You can change hold points around all")
-            .comment(" #### you want, all ASI hold points work in any slot.")
-            .comment(" #### --------------------------------------------------")
-            .comment(" ")
-            .comment(" #### ----|    Hotbar #1    |----")
-            .comment(" The first, leftmost, hotbar slot ")
-            .define("hotbarHold1", "actuallysize:nomf");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR1_HOLD_POINT;
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR2_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Hotbar #2    |----")
-            .define("hotbarHold2", "actuallysize:right_shoulder");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR2_HOLD_POINT;
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR3_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Hotbar #3    |----")
-            .define("hotbarHold3", "actuallysize:left_thigh");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR3_HOLD_POINT;
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR4_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Hotbar #4    |----")
-            .define("hotbarHold4", "actuallysize:right_pocket");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR4_HOLD_POINT;
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR5_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Hotbar #5    |----")
-            .define("hotbarHold5", "actuallysize:right_thigh");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR5_HOLD_POINT;
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR6_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Hotbar #6    |----")
-            .define("hotbarHold6", "actuallysize:left_shoulder");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR6_HOLD_POINT;
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR7_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Hotbar #7    |----")
-            .define("hotbarHold7", "actuallysize:left_pocket");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR7_HOLD_POINT;
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR8_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Hotbar #8    |----")
-            .define("hotbarHold8", "actuallysize:right_boot");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR8_HOLD_POINT;
     /**
      * @since 1.0.0
      */
-    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR9_HOLD_POINT = CONFIG_BUILDER
-            .comment(" ")
-            .comment(" #### ----|    Hotbar #9    |----")
-            .define("hotbarHold9", "actuallysize:head");
+    @NotNull private static final ForgeConfigSpec.ConfigValue<String> HOTBAR9_HOLD_POINT;
 
     /**
      * The config builder itself
      *
      * @since 1.0.0
      */
-    @NotNull static final ForgeConfigSpec SPEC = CONFIG_BUILDER.build();
+    @NotNull static final ForgeConfigSpec SPEC;
+
+    static {
+        ForgeConfigSpec.Builder CONFIG_BUILDER = new ForgeConfigSpec.Builder();
+
+        //region Preferences
+        CONFIG_BUILDER.push("preferences");
+
+        PREFERRED_BEEG = CONFIG_BUILDER.comment("§eYou will spawn giant")
+                .comment("You will spawn beeg by default without having to do anything else. Also affects the size at which you respawn. May be disabled by the server. ")
+                .define("preferablyBeeg", false);
+
+        PREFERRED_TINY = CONFIG_BUILDER.comment("§eYou will spawn tiny")
+                .comment("You will spawn tiny by default without having to do anything else. Also affects the size at which you respawn. May be disabled by the server. ")
+                .define("preferablySmol", false);
+
+        PREFERRED_SCALE = CONFIG_BUILDER.comment("§eYou will spawn this size")
+                .comment("For servers that allow you to freely choose your size, what scale do you want to be by default? Also affects the size at which you respawn. Set to '1' to disable this feature.")
+                .defineInRange("preferredScale", 1, 0.05, 25);
+
+        CONFIG_BUILDER.pop();
+        //endregion
+
+        //region Holding
+        CONFIG_BUILDER.push("holding");
+
+        HEAD_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When holding an entity in your head slot, where does it show up on your player?")
+                .define("headHold", "actuallysize:hat");
+
+        CHEST_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When holding an entity in your chestplate slot, where does it show up on your player?")
+                .define("chestHold", "actuallysize:chest_pocket");
+
+        LEGS_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When holding an entity in your leggings slot, where does it show up on your player? ")
+                .define("legsHold", "actuallysize:hoodie_pocket");
+
+        FEET_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When holding an entity in your boots slot, where does it show up on your player? ")
+                .define("bootsHold", "actuallysize:left_boot");
+
+        MAINHAND_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When holding an entity in your main hand, where does it show up on your player? ")
+                .define("mainhandHold", "actuallysize:right_hand");
+
+        OFFHAND_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When holding an entity in your offhand, where does it show up on your player? ")
+                .define("offhandHold", "actuallysize:left_fist");
+
+        CONFIG_BUILDER.push("hotbar");
+        HOTBAR1_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When their item is in the first, leftmost, hotbar slot.")
+                .define("hotbarHold1", "actuallysize:nomf");
+
+        HOTBAR2_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When their item is in the second hotbar slot.")
+                .define("hotbarHold2", "actuallysize:right_shoulder");
+
+        HOTBAR3_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When their item is in the third hotbar slot.")
+                .define("hotbarHold3", "actuallysize:left_thigh");
+
+        HOTBAR4_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When their item is in the fourth hotbar slot.")
+                .define("hotbarHold4", "actuallysize:right_pocket");
+
+        HOTBAR5_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When their item is in the central hotbar slot.")
+                .define("hotbarHold5", "actuallysize:right_thigh");
+
+        HOTBAR6_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When their item is in the sixth hotbar slot.")
+                .define("hotbarHold6", "actuallysize:left_shoulder");
+
+        HOTBAR7_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When their item is in the seventh hotbar slot.")
+                .define("hotbarHold7", "actuallysize:left_pocket");
+
+        HOTBAR8_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When their item is in the eight hotbar slot.")
+                .define("hotbarHold8", "actuallysize:right_boot");
+
+        HOTBAR9_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("When their item is in the last, rightmost, hotbar slot.")
+                .define("hotbarHold9", "actuallysize:head");
+        CONFIG_BUILDER.pop();
+
+        CONFIG_BUILDER.push("advanced");
+        CURSOR_HOLD_POINT = CONFIG_BUILDER.comment("§eWhere to put tinies?")
+                .comment("While you move around an entity in your inventory, where does it show up on your player? ")
+                .define("cursorHold", "actuallysize:pinch");
+
+        ONLY_PLAYERS = CONFIG_BUILDER.comment("§eAnimals and players are held differently")
+                .comment("When this is enabled, these custom hold points will only apply when holding other players. All other mobs will be held in the default slots while this is enabled.")
+                .define("onlyForPlayers", true);
+        CONFIG_BUILDER.pop();
+
+        CONFIG_BUILDER.pop();
+        //endregion
+
+        SPEC = CONFIG_BUILDER.build();
+    }
     //endregion
 
     //region Config Object
