@@ -89,14 +89,6 @@ public class ASIWorldSystemManager {
         standardBeegItems();
     }
 
-    /**
-     * The Manager for the system that allows you
-     * to pickup entities smaller than you.
-     *
-     * @since 1.0.0
-     */
-    public ASIPreferencesManager PREFS_MANAGER = new ASIPreferencesManager();
-
     //region Beeg Building Furniture
     /**
      * The block state property for Simple Beeg Blocks

@@ -32,10 +32,10 @@ public abstract class RecipeProviderMixin implements JustDoIt {
         if (pCategory == RecipeCategory.BUILDING_BLOCKS && pPacked instanceof Block) {
 
             // If the packed version is a block
-            if (ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock((Block) pPacked)) {
+            if (ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock((Block) pPacked)) {
 
                 // Register this beeg item
-                ActuallySizeInteractions.WORLD_SYSTEM.RegisterBeegItem(pUnpacked.asItem());
+                ActuallySizeInteractions.getInstance().getWorldSystem().RegisterBeegItem(pUnpacked.asItem());
             }
         }
     }
@@ -51,10 +51,10 @@ public abstract class RecipeProviderMixin implements JustDoIt {
         if (pCategory == RecipeCategory.BUILDING_BLOCKS && pPacked instanceof Block) {
 
             // If the packed version is a block
-            if (ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock((Block) pPacked)) {
+            if (ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock((Block) pPacked)) {
 
                 // Register this beeg item
-                ActuallySizeInteractions.WORLD_SYSTEM.RegisterBeegItem(pUnpacked.asItem());
+                ActuallySizeInteractions.getInstance().getWorldSystem().RegisterBeegItem(pUnpacked.asItem());
             }
         }
     }

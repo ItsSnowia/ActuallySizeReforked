@@ -48,7 +48,7 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
 
                     // Beeg Building only increases inventory size for building blocks
                     if (ActuallyServerConfig.beegBuilding) {
-                        if (ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock((ItemStack) (Object) this)) {
+                        if (ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock((ItemStack) (Object) this)) {
                             gridSize = OotilityNumbers.round(Math.pow(gridSize, ActuallyServerConfig.beegInventoryPower));
                             ret *= gridSize;
                         } else {

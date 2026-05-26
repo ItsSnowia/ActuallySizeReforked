@@ -661,7 +661,7 @@ public class ASIBeegBlock {
             ItemStack mainDrop = Items.AIR.getDefaultInstance();
             for (ItemStack drop : drops) {
 
-                boolean beegBlock = ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock(drop);
+                boolean beegBlock = ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(drop);
 
                 /*
                  * Check against every consolidated stack and accomplishes two things

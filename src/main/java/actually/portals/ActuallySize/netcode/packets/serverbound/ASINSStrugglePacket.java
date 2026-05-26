@@ -82,7 +82,7 @@ public class ASINSStrugglePacket {
             if (hold == null || hold.isVirtualHoldPoint()) { return; }
 
             // Register struggle and calculate totals
-            ArrayList<Long> totals = registerStruggle(ActuallySizeInteractions.WORLD_SYSTEM.PREFS_MANAGER.GetEffectiveUUID(player), getTick());
+            ArrayList<Long> totals = registerStruggle(ActuallySizeInteractions.getInstance().getPreferencesSystem().GetEffectiveUUID(player), getTick());
             //STG//ActuallySizeInteractions.Log("Received STRUGGLE &e " + getTick() + " &7 for a total of &b " + totals.size());
             if (hold.canBeEscapedByStruggling(entityDuality.actuallysize$getItemEntityHolder(), entityDuality, totals)) {
                 //STG//ActuallySizeInteractions.Log("&a >>> ESCAPED <<< ");

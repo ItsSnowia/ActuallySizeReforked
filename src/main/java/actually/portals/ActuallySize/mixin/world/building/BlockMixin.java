@@ -55,7 +55,7 @@ public abstract class BlockMixin implements BeegBreaker {
 
                 ItemEntity asItemEntity = (ItemEntity) entity;
                 ItemStack item = asItemEntity.getItem();
-                boolean beegBlock = ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock(item);
+                boolean beegBlock = ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(item);
 
                 if (beegBlock) {
 

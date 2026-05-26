@@ -31,7 +31,7 @@ public class GUIGraphicsMixin {
         if (!ActuallyServerConfig.beegBuilding) { original.call(pFont, pStack, pX, pY, null); return; }
         if (ActuallyServerConfig.beegInventoryPower <= 1) { original.call(pFont, pStack, pX, pY, null); return; }
         if (ActuallyServerConfig.reducedBeegBuildingDrops) { original.call(pFont, pStack, pX, pY, null); return; }
-        if (!ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock(pStack)) { original.call(pFont, pStack, pX, pY, null); return; }
+        if (!ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(pStack)) { original.call(pFont, pStack, pX, pY, null); return; }
 
         /*
          * Beeg Inventory system makes building blocks kinda scuffed...

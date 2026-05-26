@@ -915,7 +915,7 @@ public class ASIPickupSystemManager {
         if (!(holder instanceof ServerPlayer)) {
             /*HDA*/ActuallySizeInteractions.LogHDA(false, ASIPickupSystemManager.class, "HDA", "No adjustment - not player");
             return original; }
-        ASINSPreferredSize prefs = ActuallySizeInteractions.WORLD_SYSTEM.PREFS_MANAGER.GetPreferredSize((ServerPlayer) holder);
+        ASINSPreferredSize prefs = ActuallySizeInteractions.getInstance().getPreferencesSystem().GetPreferredSize((ServerPlayer) holder);
 
         // Players are held special by default, but it may be disabled
         boolean specialHold = entityCounterpart instanceof Player;

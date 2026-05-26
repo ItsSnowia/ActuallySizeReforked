@@ -208,7 +208,7 @@ public class ASINSPreferredSize {
             if (!optionable.actuallysize$isPreferredOptionsApplied(toDouble())) { applyTo(player); }
 
             // Apply those settings
-            ActuallySizeInteractions.WORLD_SYSTEM.PREFS_MANAGER.SetPreferredSize(player, this);
+            ActuallySizeInteractions.getInstance().getPreferencesSystem().SetPreferredSize(player, this);
         });
         contextSupplier.get().setPacketHandled(true);
     }

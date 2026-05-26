@@ -65,7 +65,7 @@ public class ForgeHooksMixin {
         int scale = OotilityNumbers.ceil(ASIUtilities.getEntityScale(actuallysize$placer));
         if (scale <= 1) { return; }
         if (actuallysize$OnFurniturePlaceCall(context, scale)) { return; }
-        if (!ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock(context.getItemInHand())) { return; }
+        if (!ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(context.getItemInHand())) { return; }
 
         // Good one
         actuallysize$placingGrid = ASIBeegBlock.containing(scale, context.getClickedPos().getCenter()).withHalved(actuallysize$placer.isShiftKeyDown());
@@ -275,7 +275,7 @@ public class ForgeHooksMixin {
         if (!(actuallysize$placer instanceof ServerPlayer)) { return false; }
 
         ItemStack placing = context.getItemInHand();
-        ASIBeegFurnishing furnishing = ActuallySizeInteractions.WORLD_SYSTEM.isBeegFurniture(placing.getItem());
+        ASIBeegFurnishing furnishing = ActuallySizeInteractions.getInstance().getWorldSystem().isBeegFurniture(placing.getItem());
         if (furnishing == null) { return false; }
 
         // Prepare this furniture placement.

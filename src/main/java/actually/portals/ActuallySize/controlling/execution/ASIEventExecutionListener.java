@@ -82,7 +82,7 @@ public class ASIEventExecutionListener {
             optionable.actuallysize$setPreferredOptionsApplied(-1);
 
             // Get prefs
-            ASINSPreferredSize prefs = ActuallySizeInteractions.WORLD_SYSTEM.PREFS_MANAGER.GetPreferredSize(player);
+            ASINSPreferredSize prefs = ActuallySizeInteractions.getInstance().getPreferencesSystem().GetPreferredSize(player);
             if (prefs != null) {
 
                 // Apply prefs instant
@@ -599,7 +599,7 @@ public class ASIEventExecutionListener {
         if (scale <= 1) { return; }
 
         // Not a participant block? I sleep
-        if (!ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock(event.getPlacedBlock().getBlock())) { return; }
+        if (!ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(event.getPlacedBlock().getBlock())) { return; }
 
         // Delegate to the beeg block system
         ASIBeegBlock beegBlock = ASIBeegBlock.containing(scale, event.getBlockSnapshot().getPos().getCenter());
@@ -636,7 +636,7 @@ public class ASIEventExecutionListener {
         if (beegBlock.getEffectiveScale() <= 1) { return; }
 
         // Not a participant block? I sleep
-        if (!ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock(event.getState().getBlock())) { return; }
+        if (!ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(event.getState().getBlock())) { return; }
 
         ASIWorldBlock block = new ASIWorldBlock(event.getState(), event.getPos(), (Level) event.getLevel());
 
@@ -663,7 +663,7 @@ public class ASIEventExecutionListener {
         ItemStack beegItem = event.getItem().getItem();
 
         // Not a participant block? I sleep
-        if (!ActuallySizeInteractions.WORLD_SYSTEM.canBeBeegBlock(beegItem)) { return; }
+        if (!ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(beegItem)) { return; }
 
         // Prevent infinity sand
         BeegPicker infinitySand = ((BeegPicker) (Object) beegItem);

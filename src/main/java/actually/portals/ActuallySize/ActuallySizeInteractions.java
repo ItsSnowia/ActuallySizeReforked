@@ -4,6 +4,7 @@ import actually.portals.ActuallySize.controlling.execution.ASIClientsideRequests
 import actually.portals.ActuallySize.netcode.ASINetworkManager;
 import actually.portals.ActuallySize.pickup.ASIPickupSystemManager;
 import actually.portals.ActuallySize.world.ASIWorldSystemManager;
+import actually.portals.ActuallySize.world.preferences.ASIPreferencesManager;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -37,26 +38,61 @@ import org.slf4j.Logger;
 public class ActuallySizeInteractions {
 
     /**
-     * Registry of blocks added by this mod
+     * The ModID used everywhere that this modID is required
      *
      * @since 1.0.0
      */
-    public static final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, ActuallySizeInteractions.MODID);
+    public static final String MODID = "actuallysize";
 
     /**
-     * Registry of items added by this mod
+     * Registering the Actually Size Interactions plugin
+     *
+     * @param context The mod loading context
+     *
+     * @since 1.0.0
+     * @author Actually Portals
+     */
+    public ActuallySizeInteractions(FMLJavaModLoadingContext context) {
+        INSTANCE = this;
+
+        // Register this mod onto Forge
+        MinecraftForge.EVENT_BUS.register(this);
+        context.getModEventBus().addListener(this::OnCommonSetup);
+
+        // Register Mod Configuration
+        context.registerConfig(ModConfig.Type.SERVER, ActuallyServerConfig.SPEC);
+        context.registerConfig(ModConfig.Type.CLIENT, ActuallyClientConfig.SPEC);
+
+        // Register the various systems
+        getPickupSystem().OnModLoadInitialize(context);
+        getWorldSystem().OnModLoadInitialize(context);
+        ITEM_REGISTRY.register(context.getModEventBus());
+        BLOCK_REGISTRY.register(context.getModEventBus());
+    }
+
+    /**
+     * The Instance of the Mod
      *
      * @since 1.0.0
      */
-    public static final DeferredRegister<Item> ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ActuallySizeInteractions.MODID);
+    static ActuallySizeInteractions INSTANCE = null;
 
+    /**
+     * @return The Instance of the Mod
+     *
+     * @since 1.0.0
+     * @author Actually Portals
+     */
+    @NotNull public static ActuallySizeInteractions getInstance() { return INSTANCE; }
+
+    //region Systems
     /**
      * The Manager for the system that allows you
      * to pickup entities smaller than you.
      *
      * @since 1.0.0
      */
-    public static ASIPickupSystemManager PICKUP_SYSTEM = null;
+    ASIPickupSystemManager PICKUP_SYSTEM = null;
 
     /**
      * @return The Pickup System manager
@@ -78,7 +114,29 @@ public class ActuallySizeInteractions {
      *
      * @since 1.0.0
      */
-    public static ASIWorldSystemManager WORLD_SYSTEM = null;
+    ASIPreferencesManager PREFS_MANAGER = null;
+
+    /**
+     * @return The Pickup System manager
+     *
+     * @since 1.0.0
+     * @author Actually Portals
+     */
+    @NotNull public ASIPreferencesManager getPreferencesSystem() {
+        if (PREFS_MANAGER != null) { return PREFS_MANAGER; }
+
+        // Just create a new Renderer without level
+        PREFS_MANAGER = new ASIPreferencesManager();
+        return PREFS_MANAGER;
+    }
+
+    /**
+     * The Manager for the system that allows you
+     * to pickup entities smaller than you.
+     *
+     * @since 1.0.0
+     */
+    ASIWorldSystemManager WORLD_SYSTEM = null;
 
     /**
      * @return The Pickup System manager
@@ -93,38 +151,22 @@ public class ActuallySizeInteractions {
         WORLD_SYSTEM = new ASIWorldSystemManager();
         return WORLD_SYSTEM;
     }
+    //endregion
 
+    //region Common
     /**
-     * The ModID used everywhere that this modID is required
+     * Registry of blocks added by this mod
      *
      * @since 1.0.0
      */
-    public static final String MODID = "actuallysize";
+    public static final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, ActuallySizeInteractions.MODID);
 
     /**
-     * Registering the Actually Size Interactions plugin
-     *
-     * @param context The mod loading context
+     * Registry of items added by this mod
      *
      * @since 1.0.0
-     * @author Actually Portals
      */
-    public ActuallySizeInteractions(FMLJavaModLoadingContext context) {
-
-        // Register this mod onto Forge
-        MinecraftForge.EVENT_BUS.register(this);
-        context.getModEventBus().addListener(this::OnCommonSetup);
-
-        // Register Mod Configuration
-        context.registerConfig(ModConfig.Type.SERVER, ActuallyServerConfig.SPEC);
-        context.registerConfig(ModConfig.Type.CLIENT, ActuallyClientConfig.SPEC);
-
-        // Register the various systems
-        getPickupSystem().OnModLoadInitialize(context);
-        getWorldSystem().OnModLoadInitialize(context);
-        ITEM_REGISTRY.register(context.getModEventBus());
-        BLOCK_REGISTRY.register(context.getModEventBus());
-    }
+    public static final DeferredRegister<Item> ITEM_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ActuallySizeInteractions.MODID);
 
     /**
      * @param event The common setup event call
@@ -145,7 +187,6 @@ public class ActuallySizeInteractions {
         });
     }
 
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
 
@@ -154,7 +195,9 @@ public class ActuallySizeInteractions {
             IS_CLIENT_DEV = true;
         }
     }
+    //endregion
 
+    //region Logging
     /**
      * If we are running client-sided, but it is poorly tested.
      * Only really useful for my Grep Console IntelliJ plugin setup.
@@ -247,4 +290,5 @@ public class ActuallySizeInteractions {
      * @since 1.0.0
      */
     private static final Logger FORGE_LOGGER = LogUtils.getLogger();
+    //endregion
 }
