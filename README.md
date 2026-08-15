@@ -11,4 +11,5 @@ A fork of Actually Size Interactions to add gameplay and size interactions to th
 -# (Crashes on Forge Version 47.1.11 or higher)
 6. Add commands to switch your size on the fly in-game. **[HIGH PRIORITY]**
 
-### **// [Name is pending & is subjected to change]**
+## Features should be worked on in this order, from first to last: 
+``[HIGH PRIORITY]`` > ``[MEDIUM PRIORITY]`` > ``[LOW PRIORITY]``.
