@@ -13,15 +13,11 @@ import actually.portals.ActuallySize.pickup.events.ASIPSFoodPropertiesEvent;
 import actually.portals.ActuallySize.pickup.events.ASIPSPickupToInventoryEvent;
 import actually.portals.ActuallySize.pickup.item.ASIPSHeldEntityItem;
 import actually.portals.ActuallySize.pickup.mixininterfaces.*;
-import actually.portals.ActuallySize.world.grid.ASIBeegBlock;
-import actually.portals.ActuallySize.world.grid.ASIWorldBlock;
 import actually.portals.ActuallySize.world.mixininterfaces.*;
 import gunging.ootilities.GungingOotilitiesMod.events.extension.ServersideEntityEquipmentChangeEvent;
 import gunging.ootilities.GungingOotilitiesMod.exploring.players.ISPExplorerStatements;
 import gunging.ootilities.GungingOotilitiesMod.ootilityception.OotilityNumbers;
 import gunging.ootilities.GungingOotilitiesMod.scheduling.*;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -37,22 +33,16 @@ import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 /**
  * Listens to various events, even events from ASI itself,
@@ -575,158 +565,6 @@ public class ASIEventExecutionListener {
             }
         }
     }
-
-    /**
-     * @param event The single-block place event being run
-     *
-     * @since 1.0.0
-     * @author Actually Portals
-     */
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void OnBeegBuild(@NotNull BlockEvent.EntityPlaceEvent event) {
-
-        // Must only catch serverside singe block place events
-        if (!ActuallyServerConfig.beegBuilding) { return; }
-        if (event instanceof BlockEvent.EntityMultiPlaceEvent) { return; }
-        if (!(event.getLevel() instanceof ServerLevel)) { return; }
-        if (event.isCanceled()) { return; }
-
-        // Must be placed by a beeg
-        Entity placer = event.getEntity();
-        if (placer == null) { return; }
-        if (placer instanceof Player) { return; }   // NOT FOR PLAYERS
-        double scale = ASIUtilities.getEntityScale(placer);
-        if (scale <= 1) { return; }
-
-        // Not a participant block? I sleep
-        if (!ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(event.getPlacedBlock().getBlock())) { return; }
-
-        // Delegate to the beeg block system
-        ASIBeegBlock beegBlock = ASIBeegBlock.containing(scale, event.getBlockSnapshot().getPos().getCenter());
-        // event.setCanceled(true); Allow it through fk it
-        Direction dir = ((Directed) event).actuallysize$getDirection();
-        ServerLevel world = (ServerLevel) event.getLevel();
-
-        // Run as multi-block event, next tick
-        SchedulingManager.scheduleTask(() -> beegBlock.tryBeegBuild(new ArrayList<>(), event.getBlockSnapshot(), event.getPlacedBlock(), dir, placer, world, -1),0, false);
-    }
-
-    /**
-     * @param event The single-block break event being run
-     *
-     * @since 1.0.0
-     * @author Actually Portals
-     */
-    @SubscribeEvent
-    public static void OnBeegBreak(@NotNull BlockEvent.BreakEvent event) {
-
-        // Must only catch serverside singe block place events
-        if (!ActuallyServerConfig.beegBuilding) { return; }
-        if (!(event.getLevel() instanceof ServerLevel)) { return; }
-        if (event.isCanceled()) { return; }
-
-        // Must be broken by a beeg player
-        if (!(event.getPlayer() instanceof ServerPlayer)) { return; }
-        ServerPlayer beeg = (ServerPlayer) event.getPlayer();
-        BeegBreaker breaker = (BeegBreaker) beeg;
-        if (breaker.actuallysize$isBeegBreaking()) { return; }
-
-        // Find block
-        ASIBeegBlock beegBlock = ASIBeegBlock.containing(ASIUtilities.getEntityScale(beeg), event.getPos().getCenter()).withHalved(beeg.isShiftKeyDown());
-        if (beegBlock.getEffectiveScale() <= 1) { return; }
-
-        // Not a participant block? I sleep
-        if (!ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(event.getState().getBlock())) { return; }
-
-        ASIWorldBlock block = new ASIWorldBlock(event.getState(), event.getPos(), (Level) event.getLevel());
-
-        // Simulate breaking by this player
-        try {
-            breaker.actuallysize$setBeegBreaking(true);
-            beegBlock.tryBeegBreak(block, beeg, (ServerLevel) event.getLevel());
-
-        } finally { breaker.actuallysize$setBeegBreaking(false); }
-    }
-
-    /**
-     * @param event When picking up an item
-     *
-     * @since 1.0.0
-     * @author Actually Portals
-     */
-    @SubscribeEvent
-    public static void OnBeegPickup(@NotNull EntityItemPickupEvent event) {
-
-        // Must only catch serverside singe block place events
-        if (!ActuallyServerConfig.beegBuilding) { return; }
-        if (!ActuallyServerConfig.reducedBeegBuildingDrops) { return; }
-        ItemStack beegItem = event.getItem().getItem();
-
-        // Not a participant block? I sleep
-        if (!ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock(beegItem)) { return; }
-
-        // Prevent infinity sand
-        BeegPicker infinitySand = ((BeegPicker) (Object) beegItem);
-        beegItem.setCount(infinitySand.actuallysize$getOriginalCount());
-        infinitySand.actuallysize$getOriginalCount();
-
-        // Read their scale, tinies don't participate in this
-        double scale = ASIUtilities.getEntityScale(event.getEntity());
-        double itemScale = ASIUtilities.getEntityScale(event.getItem());
-        if (scale < 1) { scale = 1; }
-        if (itemScale < 1) { itemScale = 1; }
-
-        // No point in adjusting if the system is not engaged
-        if (scale == 1 && itemScale == 1) { return; }
-        int virtualCount = beegItem.getCount();
-
-        // Calculate nerfing factor
-        scale = scale / itemScale;
-        double nerf = 1 / scale;
-        double nerfedCount = virtualCount * nerf * nerf;
-        int flooredCount = OotilityNumbers.floor(nerfedCount);
-        if (flooredCount < 1 && OotilityNumbers.rollSuccess(nerfedCount * 1.1)) { flooredCount = 1; }
-
-        // Set that count
-        beegItem.setCount(flooredCount);
-        infinitySand.actuallysize$setSizedCount(flooredCount);
-    }
-
-    /*
-    public static void OnStartBuildGridCubeDisplay() {
-        Entity entityCounterpart = null;
-        Player holderPlayer = null;
-
-        Vec3 vec = entityCounterpart.position();
-        ASIGConstructor constructor = new ASIGCShelled(
-                OotilityNumbers.ceil(ASIUtilities.getEntityScale(holderPlayer)),
-                new Vec3(OotilityNumbers.floor(vec.x), OotilityNumbers.floor(vec.y), OotilityNumbers.floor(vec.z)));
-        ArrayList<Vec3> gen = constructor.elaborate(0, 32767);
-        ActuallySizeInteractions.Log("GEN " + gen.size());
-        ASIEventExecutionListener.Proc(gen, (ServerLevel) entityCounterpart.level());
-    }
-
-    @SubscribeEvent
-    public static void OnBuildGridCubeDisplay(@NotNull SCHTwoTicksEvent event) {
-        if (event.isClientSide()) { return; }
-        if (gridCubeIndices == null) { return; }
-
-        Vec3 pso = gridCubeIndices.get(gridCubeIndex);
-        gridCubeIndex++;
-        gridCubeLevel.setBlock(BlockPos.containing(pso.x, pso.y, pso.z), Blocks.LIME_STAINED_GLASS.defaultBlockState(), 3);
-
-        if (gridCubeIndex >= gridCubeIndices.size()) { gridCubeIndices = null; gridCubeLevel = null; }
-    }
-
-    static ServerLevel gridCubeLevel = null;
-    static ArrayList<Vec3> gridCubeIndices = null;
-    static int gridCubeIndex = 0;
-    public static void Proc(@NotNull ArrayList<Vec3> idc, @NotNull ServerLevel lvl) {
-        gridCubeIndices = idc;
-        gridCubeIndex = 0;
-        gridCubeLevel = lvl;
-    }
-    //*/
 
     /*
     @SubscribeEvent

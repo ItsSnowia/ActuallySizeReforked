@@ -3,8 +3,6 @@ package actually.portals.ActuallySize.mixin;
 import actually.portals.ActuallySize.pickup.mixininterfaces.*;
 import actually.portals.ActuallySize.pickup.ASIPickupSystemManager;
 import actually.portals.ActuallySize.pickup.item.ASIPSHeldEntityItem;
-import actually.portals.ActuallySize.world.mixininterfaces.BeegBreaker;
-import actually.portals.ActuallySize.world.mixininterfaces.BeegPicker;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import gunging.ootilities.GungingOotilitiesMod.exploring.ItemStackLocation;
@@ -26,11 +24,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 @Mixin(ItemStack.class)
-public abstract class ItemStackMixin extends net.minecraftforge.common.capabilities.CapabilityProvider<ItemStack> implements net.minecraftforge.common.extensions.IForgeItemStack, ItemDualityCounterpart, Edacious, UseTimed, BeegBreaker, BeegPicker {
+public abstract class ItemStackMixin extends net.minecraftforge.common.capabilities.CapabilityProvider<ItemStack> implements net.minecraftforge.common.extensions.IForgeItemStack, ItemDualityCounterpart, Edacious, UseTimed {
 
     @Shadow public abstract Item getItem();
 
@@ -285,21 +282,6 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
         actuallysize$overriddenUseTime = ticks;
     }
 
-    @Unique boolean actuallysize$isBeegBreaking;
-
-    @Override
-    public boolean actuallysize$isBeegBreaking() { return actuallysize$isBeegBreaking; }
-
-    @Override
-    public void actuallysize$setBeegBreaking(boolean is) { actuallysize$isBeegBreaking = is; }
-
-    @Inject(method = "isDamageableItem", at = @At("HEAD"), cancellable = true)
-    public void WhenDamageableCheck(CallbackInfoReturnable<Boolean> cir) {
-
-        // During beeg breaking, the item cannot be damaged
-        if (actuallysize$isBeegBreaking) { cir.setReturnValue(false); cir.cancel(); }
-    }
-
     @Inject(method = "save", at = @At("HEAD"))
     public void OnDoNotSaveNonASI(CompoundTag pCompoundTag, CallbackInfoReturnable<CompoundTag> cir) {
         boolean nonASI = !(getItem() instanceof ASIPSHeldEntityItem);
@@ -311,42 +293,4 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
         }
     }
 
-    @Override
-    public void actuallysize$addBeegBreakingDrop(@NotNull ItemStack drop) { }
-
-    @Override
-    public @NotNull ArrayList<ItemStack> actuallysize$getBeegBreakingDrops() { return new ArrayList<>(); }
-
-    @Override
-    public void actuallysize$setBeegBreaker(@Nullable ServerPlayer beeg) { }
-
-    @Override
-    public @Nullable ServerPlayer actuallysize$getBeegBreaker() { return null; }
-
-    @Unique
-    @Nullable Integer actuallysize$originalCount;
-    @Unique int actuallysize$sizedCount;
-
-    @Override
-    public int actuallysize$getSizedCount() {
-        return actuallysize$sizedCount;
-    }
-
-    @Override
-    public void actuallysize$setSizedCount(int count) {
-        actuallysize$sizedCount = count;
-    }
-
-    @Override
-    public int actuallysize$getOriginalCount() {
-        if (actuallysize$originalCount == null) { actuallysize$originalCount = getCount(); }
-        return actuallysize$originalCount;
-    }
-
-    @Inject(method = "setCount", at = @At("HEAD"))
-    public void onSetCount(int pCount, CallbackInfo ci) {
-
-        // Clear original count once it is restored
-        if (actuallysize$originalCount != null) { if (pCount == actuallysize$originalCount) { actuallysize$originalCount = null; actuallysize$sizedCount = -1; }}
-    }
 }

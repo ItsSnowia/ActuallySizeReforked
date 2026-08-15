@@ -84,17 +84,6 @@ repositories {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven"
     }
-    maven {
-        name = "JitPack"
-        url = "https://jitpack.io"
-        content {
-            includeGroup "com.github.Virtuoel"
-        }
-    }
-    maven {
-        name = "GitHub"
-        url = "https://maven.pkg.github.com"
-    }
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
     maven { url = "https://maven.tterrag.com" } // Registrate
 
@@ -123,7 +112,7 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.7:processor'
 
-    implementation fg.deobf("com.github.Virtuoel:Pehkui:${pehkui_version}")
+    implementation fg.deobf("virtuoel:Pehkui:${pehkui_version}")
     implementation fg.deobf("io.github.gunging:gungingoom:${goom_version}")
     implementation fg.deobf("maven.modrinth:figura:${figura_version}")
 

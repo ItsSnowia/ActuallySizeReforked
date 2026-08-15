@@ -23,11 +23,7 @@
     "holding.pose.PoseStackPoseMixin",
     "third.figura.FiguraInventoryScreenMixin",
     "third.figura.FiguraScissorFixMixin",
-    "world.SoundEngineMixin",
-    "world.inventory.GUIGraphicsMixin",
-    "world.inventory.KeyboardInputMixin",
-    "world.inventory.KeyMappingMixin",
-    "world.inventory.LocalPlayerMixin"
+    "world.SoundEngineMixin"
   ],
   "mixins": [
     "DamageSourceMixin",
@@ -89,13 +85,6 @@
     "third.figura.FiguraUIHelperMixin",
     "world.StepHeightOverride$Pehkui",
     "world.building.BlockMixin",
-    "world.building.BucketItemMixin",
-    "world.building.DiggerItemMixin",
-    "world.building.ForgeEventFactoryMixin",
-    "world.building.ForgeHooksMixin",
-    "world.building.ItemEntityMixin",
-    "world.building.PlaceEventMixin",
-    "world.building.RecipeProviderMixin",
     "world.fear.MeleeAttackGoalMixin",
     "world.fear.PanicGoalMixin",
     "world.fear.RangedAttackGoalMixin",

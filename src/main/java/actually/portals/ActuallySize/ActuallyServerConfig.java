@@ -123,20 +123,6 @@ public class ActuallyServerConfig {
     @NotNull private static final ForgeConfigSpec.DoubleValue FEAR_THRESHOLD;
 
     /**
-     * If beegs will build in a grid their scale
-     *
-     * @since 1.0.0
-     */
-    @NotNull private static final ForgeConfigSpec.BooleanValue BEEG_BUILDING;
-
-    /**
-     * Allows to disable block ratio fixes
-     *
-     * @since 1.0.0
-     */
-    @NotNull private static final ForgeConfigSpec.BooleanValue REDUCED_BEEG_BUILDING_DROPS;
-
-    /**
      * If beegs receive less damage and knockback from all sources
      *
      * @since 1.0.0
@@ -215,18 +201,9 @@ public class ActuallyServerConfig {
         CONFIG_BUILDER.push("gameplay");
 
         CONFIG_BUILDER.push("building");
-        BEEG_BUILDING = CONFIG_BUILDER.comment("§eGiants will build in blocks their size")
-                .comment("Enables giants to build and break blocks in a scaled grid (so an 8X beeg will break in 8x8x8). Crouch to build at half this scale (per the example, 4x4x4)")
-                .define("beegBuilding", true);
-
         BEEG_INVENTORY_POWER = CONFIG_BUILDER.comment("§eIncreases max stack size for giants")
                 .comment("The max stack size of all items in the inventory of giants is increased by their scale. The max stack of building blocks is scaled to this power of their scale. Set to 0 to disable this system.")
                 .defineInRange("beegInventoryPower", 3,0, 3);
-
-        REDUCED_BEEG_BUILDING_DROPS = CONFIG_BUILDER.comment("§eReduces blocks picked up by giants")
-                .comment("When a 10X giant picks up a ton of blocks, they will only pickup 1% of the total. This balances out because placing one block down will actually place down 100 blocks. Therefore, 100X less inventory space is used when mining down a mountain.")
-                .comment("Obsolete, maybe use when there are incompatibilities with [Beeg Inventory Power].")
-                .define("stochasticDropRates", false);
         CONFIG_BUILDER.pop();
 
         CONFIG_BUILDER.push("combat");
@@ -308,7 +285,6 @@ public class ActuallyServerConfig {
     public static boolean enableEntityPickup;
     public static boolean enableEntityHolding;
     public static boolean enableFreeSize;
-    public static boolean beegBuilding, reducedBeegBuildingDrops;
 
     public static boolean kiraScalings;
     public static boolean usePracticalSize;
@@ -349,9 +325,7 @@ public class ActuallyServerConfig {
         strongestBeeg = SIZE_DAMAGE_LIMIT.get();
         hungryBeegs = BEEGS_ARE_HUNGRY.get();
         fearThreshold = FEAR_THRESHOLD.get();
-        beegBuilding = BEEG_BUILDING.get();
         beegInventoryPower = BEEG_INVENTORY_POWER.get();
-        reducedBeegBuildingDrops = REDUCED_BEEG_BUILDING_DROPS.get();
 
         foodDuration = BEEGS_ARE_HUNGRY_DURATION.get();
         foodFrequency = BEEGS_ARE_HUNGRY_FREQUENCY.get();

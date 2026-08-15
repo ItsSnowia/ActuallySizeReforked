@@ -1,7 +1,6 @@
 package actually.portals.ActuallySize.mixin.world.inventory;
 
 import actually.portals.ActuallySize.ActuallyServerConfig;
-import actually.portals.ActuallySize.ActuallySizeInteractions;
 import actually.portals.ActuallySize.pickup.item.ASIPSHeldEntityItem;
 import actually.portals.ActuallySize.pickup.mixininterfaces.HolderScalable;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
@@ -44,19 +43,7 @@ public abstract class ItemStackMixin extends net.minecraftforge.common.capabilit
             if (actuallysize$inPlayerInventory > 1) {
 
                 int gridSize = OotilityNumbers.ceil(actuallysize$inPlayerInventory);
-                if (gridSize > 1) {
-
-                    // Beeg Building only increases inventory size for building blocks
-                    if (ActuallyServerConfig.beegBuilding) {
-                        if (ActuallySizeInteractions.getInstance().getWorldSystem().canBeBeegBlock((ItemStack) (Object) this)) {
-                            gridSize = OotilityNumbers.round(Math.pow(gridSize, ActuallyServerConfig.beegInventoryPower));
-                            ret *= gridSize;
-                        } else {
-                            ret *= gridSize;
-                        }
-
-                        // No beeg building works on anything with more than 1 count max
-                    } else if (ret > 1) { ret *= gridSize; } }
+                if (gridSize > 1 && ret > 1) { ret *= gridSize; }
             }
         }
 

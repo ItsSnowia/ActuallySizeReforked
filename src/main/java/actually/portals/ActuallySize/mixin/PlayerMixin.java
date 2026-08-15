@@ -17,7 +17,6 @@ import actually.portals.ActuallySize.pickup.holding.pose.ASIPSTinyPosedHold;
 import actually.portals.ActuallySize.pickup.holding.pose.smol.ASIPSTinyPoseProfile;
 import actually.portals.ActuallySize.pickup.item.ASIPSHeldEntityItem;
 import actually.portals.ActuallySize.pickup.mixininterfaces.*;
-import actually.portals.ActuallySize.world.mixininterfaces.BeegBreaker;
 import actually.portals.ActuallySize.world.mixininterfaces.PreferentialOptionable;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -50,11 +49,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 @Mixin(Player.class)
-public abstract class PlayerMixin extends LivingEntity implements HoldPointConfigurable, GraceImpulsable, PreferentialOptionable, BeegBreaker {
+public abstract class PlayerMixin extends LivingEntity implements HoldPointConfigurable, GraceImpulsable, PreferentialOptionable {
 
     @Shadow public abstract FoodData getFoodData();
 
@@ -344,29 +342,6 @@ public abstract class PlayerMixin extends LivingEntity implements HoldPointConfi
             }
         }
     }
-
-    @Unique boolean actuallysize$isBeegBreaking;
-
-    @Override
-    public boolean actuallysize$isBeegBreaking() { return actuallysize$isBeegBreaking; }
-
-    @Override
-    public void actuallysize$setBeegBreaking(boolean is) { actuallysize$isBeegBreaking = is; if (!is) { actuallysize$beegBreakingDrops.clear(); } }
-
-    @Unique
-    @NotNull ArrayList<ItemStack> actuallysize$beegBreakingDrops = new ArrayList<>();
-
-    @Override
-    public void actuallysize$addBeegBreakingDrop(@NotNull ItemStack drop) { actuallysize$beegBreakingDrops.add(drop); }
-
-    @Override
-    public @NotNull ArrayList<ItemStack> actuallysize$getBeegBreakingDrops() { return actuallysize$beegBreakingDrops; }
-
-    @Override
-    public void actuallysize$setBeegBreaker(@Nullable ServerPlayer beeg) { }
-
-    @Override
-    public @Nullable ServerPlayer actuallysize$getBeegBreaker() { return null; }
 
     @WrapOperation(method = "checkMovementStatistics", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"))
     public void OnTravelFoodExhaust(Player instance, float pExhaustion, Operation<Void> original) {
