@@ -11,6 +11,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.animal.AbstractGolem;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
@@ -308,7 +309,12 @@ public class ASIWorldSystemManager {
         if (!ActuallyServerConfig.enableCrushingDamage) { return false; }
         if (beeg == tiny) { return false; }
         if (beeg.isDeadOrDying() || tiny.isDeadOrDying()) { return false; }
-        if (ActuallyServerConfig.crushingSneakPrevents && beeg.isCrouching()) { return false; }
+
+        // standing still doesn't crush; the beeg has to actually be stepping
+        if (!beeg.walkAnimation.isMoving()) { return false; }
+
+        // crouching/crawling beegs are being careful about where they step
+        if (ActuallyServerConfig.crushingSneakPrevents && (beeg.isCrouching() || beeg.getPose() == Pose.SWIMMING)) { return false; }
 
         // riders/mounts, and entities sharing a vehicle, don't crush each other
         if (beeg.hasPassenger(tiny) || tiny.hasPassenger(beeg)) { return false; }
