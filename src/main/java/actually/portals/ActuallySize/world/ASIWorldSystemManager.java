@@ -8,6 +8,7 @@ import actually.portals.ActuallySize.world.preferences.ASIPreferencesManager;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.animal.AbstractGolem;
@@ -142,7 +143,11 @@ public class ASIWorldSystemManager {
         // Fall is not affected by ASI
         if (type.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) { return false; }
         if (type == world.damageSources().fall()) { return false; }
-        if (type == world.damageSources().cramming()) { return false; }
+
+        // Compared by type key, not instance, since ASI's own crushing damage
+        // is a freshly built DamageSource sharing the vanilla cramming type
+        if (type.is(DamageTypes.CRAMMING)) { return false; }
+
         if (type == world.damageSources().drown()) { return false; }
         if (type == world.damageSources().starve()) { return false; }
         if (type == world.damageSources().fellOutOfWorld()) { return false; }
@@ -284,6 +289,54 @@ public class ASIWorldSystemManager {
 
         // Adjust effect
         return originalDamage * sizeAmplificationFactor;
+    }
+    //endregion
+
+    //region Crushing
+    /**
+     * @param beeg The potentially larger entity, standing over the tiny
+     * @param tiny The potentially smaller entity, being stood over
+     *
+     * @return If the beeg is large enough, and otherwise eligible, to crush the tiny underfoot
+     *
+     * @since 1.0.0
+     * @author evanbones
+     */
+    public static boolean CanCrush(@NotNull LivingEntity beeg, @NotNull LivingEntity tiny) {
+
+        if (!ActuallyServerConfig.enableCrushingDamage) { return false; }
+        if (beeg == tiny) { return false; }
+        if (beeg.isDeadOrDying() || tiny.isDeadOrDying()) { return false; }
+        if (ActuallyServerConfig.crushingSneakPrevents && beeg.isCrouching()) { return false; }
+
+        // riders/mounts, and entities sharing a vehicle, don't crush each other
+        if (beeg.hasPassenger(tiny) || tiny.hasPassenger(beeg)) { return false; }
+        if (beeg.getRootVehicle() == tiny.getRootVehicle() && beeg.getRootVehicle() != beeg) { return false; }
+
+        double relative = ASIUtilities.getRelativeScale(tiny, beeg);
+        return relative >= ActuallyServerConfig.crushingThreshold;
+    }
+
+    /**
+     * Deals crushing damage to the tiny, scaled by how much bigger the beeg
+     * standing over it is, capped by the configured limit.
+     *
+     * @param beeg The larger entity crushing the tiny underfoot
+     * @param tiny The smaller entity being crushed
+     *
+     * @since 1.0.0
+     * @author evanbones
+     */
+    public static void ApplyCrushing(@NotNull LivingEntity beeg, @NotNull LivingEntity tiny) {
+        double relative = ASIUtilities.getRelativeScale(tiny, beeg);
+        double damage = (relative - ActuallyServerConfig.crushingThreshold) * ActuallyServerConfig.crushingDamageMultiplier;
+        if (damage <= 0) { return; }
+
+        double limit = tiny.getMaxHealth() * ActuallyServerConfig.crushingDamageLimit;
+        if (limit > 0 && damage > limit) { damage = limit; }
+
+        DamageSource source = new DamageSource(tiny.damageSources().cramming().typeHolder(), beeg);
+        tiny.hurt(source, (float) damage);
     }
     //endregion
 }

@@ -13,6 +13,7 @@ import actually.portals.ActuallySize.pickup.events.ASIPSFoodPropertiesEvent;
 import actually.portals.ActuallySize.pickup.events.ASIPSPickupToInventoryEvent;
 import actually.portals.ActuallySize.pickup.item.ASIPSHeldEntityItem;
 import actually.portals.ActuallySize.pickup.mixininterfaces.*;
+import actually.portals.ActuallySize.world.ASIWorldSystemManager;
 import actually.portals.ActuallySize.world.mixininterfaces.*;
 import gunging.ootilities.GungingOotilitiesMod.events.extension.ServersideEntityEquipmentChangeEvent;
 import gunging.ootilities.GungingOotilitiesMod.exploring.players.ISPExplorerStatements;
@@ -36,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -43,6 +45,8 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Listens to various events, even events from ASI itself,
@@ -563,6 +567,27 @@ public class ASIEventExecutionListener {
                     event.setAmount(0);
                 }
             }
+        }
+    }
+
+    /**
+     * Every tick, beegs standing over much smaller tinies deal
+     * crushing damage to them, scaled by their size difference.
+     *
+     * @since 1.0.0
+     * @author evanbones
+     */
+    @SubscribeEvent
+    public static void OnLivingTickCrushing(@NotNull LivingEvent.LivingTickEvent event) {
+        if (!ActuallyServerConfig.enableCrushingDamage) { return; }
+
+        LivingEntity beeg = event.getEntity();
+        if (beeg.level().isClientSide) { return; }
+
+        List<LivingEntity> nearby = beeg.level().getEntitiesOfClass(LivingEntity.class, beeg.getBoundingBox());
+        for (LivingEntity tiny : nearby) {
+            if (!ASIWorldSystemManager.CanCrush(beeg, tiny)) { continue; }
+            ASIWorldSystemManager.ApplyCrushing(beeg, tiny);
         }
     }
 

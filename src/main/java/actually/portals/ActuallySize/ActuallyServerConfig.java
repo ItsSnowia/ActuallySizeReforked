@@ -95,6 +95,41 @@ public class ActuallyServerConfig {
     @NotNull private static final ForgeConfigSpec.DoubleValue SCALE_LIMIT_RIDE;
 
     /**
+     * Whether beegs deal crushing damage to tinies they walk over
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.BooleanValue ENABLE_CRUSHING_DAMAGE;
+
+    /**
+     * The relative scale needed between a beeg and a tiny for crushing damage to occur
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.DoubleValue CRUSHING_THRESHOLD;
+
+    /**
+     * The damage dealt per multiple of relative scale above the crushing threshold
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.DoubleValue CRUSHING_DAMAGE_MULTIPLIER;
+
+    /**
+     * The maximum amount of crushing damage that may be dealt in a single hit, as a multiple of the victim's max health
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.DoubleValue CRUSHING_DAMAGE_LIMIT;
+
+    /**
+     * Whether sneaking prevents a beeg from crushing tinies underfoot
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.BooleanValue CRUSHING_SNEAK_PREVENTS;
+
+    /**
      * Whether food is nerfed for giants and buffed for tinies. Also affects eat animation time.
      *
      * @since 1.0.0
@@ -277,6 +312,32 @@ public class ActuallyServerConfig {
         CONFIG_BUILDER.pop();
         //endregion
 
+        //region Crushing
+        CONFIG_BUILDER.push("crushing");
+
+        ENABLE_CRUSHING_DAMAGE = CONFIG_BUILDER.comment("§eBeegs crush tinies underfoot")
+                .comment("If a player or entity is enough bigger than another, simply standing over/on top of the smaller one will deal crushing damage, scaled by how much bigger they are.")
+                .define("enableCrushingDamage", true);
+
+        CRUSHING_THRESHOLD = CONFIG_BUILDER.comment("§eMinimum size difference to crush")
+                .comment("How many times bigger a beeg must be than a tiny before they start dealing crushing damage by standing on them.")
+                .defineInRange("crushingThreshold", 4D, 1D, Double.MAX_VALUE);
+
+        CRUSHING_DAMAGE_MULTIPLIER = CONFIG_BUILDER.comment("§eCrushing damage strength")
+                .comment("Crushing damage dealt per multiple of relative scale above the crushing threshold. For example, at the default of 1, being crushed by someone 10x bigger than the crushing threshold deals roughly 10 damage.")
+                .defineInRange("crushingDamageMultiplier", 1D, 0D, Double.MAX_VALUE);
+
+        CRUSHING_DAMAGE_LIMIT = CONFIG_BUILDER.comment("§eCrushing damage cap")
+                .comment("The maximum crushing damage that can be dealt in a single hit, as a multiple of the victim's max health. Set higher to allow crushing to be instantly fatal.")
+                .defineInRange("crushingDamageLimit", 2D, 0D, Double.MAX_VALUE);
+
+        CRUSHING_SNEAK_PREVENTS = CONFIG_BUILDER.comment("§eSneaking avoids crushing tinies")
+                .comment("If the beeg is crouching, they will not deal crushing damage to tinies underfoot, similarly to how crouching avoids other size-related interactions.")
+                .define("crushingSneakPrevents", true);
+
+        CONFIG_BUILDER.pop();
+        //endregion
+
         SPEC = CONFIG_BUILDER.build();
     }
     //endregion
@@ -299,6 +360,12 @@ public class ActuallyServerConfig {
     public static double foodDuration, foodFrequency;
     public static double fearThreshold;
     public static double largestCranker, tiniestCranker, waterwheelCranker;
+
+    public static boolean enableCrushingDamage;
+    public static double crushingThreshold;
+    public static double crushingDamageMultiplier;
+    public static double crushingDamageLimit;
+    public static boolean crushingSneakPrevents;
 
     /**
      * Reads the values specified in the config and loads them
@@ -338,6 +405,12 @@ public class ActuallyServerConfig {
         tiniestCranker = TINIEST_CRANKER.get();
         waterwheelCranker = WATER_WHEEL_CRANKER.get();
         kiraScalings = KIRA_SCALINGS.get();
+
+        enableCrushingDamage = ENABLE_CRUSHING_DAMAGE.get();
+        crushingThreshold = CRUSHING_THRESHOLD.get();
+        crushingDamageMultiplier = CRUSHING_DAMAGE_MULTIPLIER.get();
+        crushingDamageLimit = CRUSHING_DAMAGE_LIMIT.get();
+        crushingSneakPrevents = CRUSHING_SNEAK_PREVENTS.get();
     }
     //endregion
 }
