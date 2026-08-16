@@ -1,12 +1,13 @@
 [Actually Size Interactions], by Actually Portals (?)
+[Actually Size Reforked], by ItsSnowia & huge help from Evanbones.
 
-
-Thanks to the modding community which helped indirectly this project by providing open-source examples, libraries, answers in forums, etc:
-
-Kaupenjoe for their free modding tutorials in YouTube
-Kudos to the [Forge] mod loader team
-Kudos to the [Spongepowered] team
-Kudos to the [Pehkui] mod team
-Thanks to Lumin3ra [Pehkui Resizer], for guidance in hooking onto Pehkui
-Thanks to Bailey Hollingsworth [Ars Nouveau], the Containment Ritual proved a valuable example about serializing entities as Compound Tags.
-Thanks to modmuss50 [Chunk-in-a-Globe], the Item Model renderer proved a valuable example for working with rendering.
+Thanks to the modding community, which helped this project indirectly by providing open-source examples, libraries, answers in forums, etc. [ActuallyPortals]
+Kaupenjoe for their free modding tutorials on YouTube. [ActuallyPortals]
+Kudos to the [Forge] mod loader team. [ActuallyPortals]
+Kudos to the [SpongePowered] team. [ActuallyPortals]
+Kudos to the [Pehkui] mod team. [ActuallyPortals]
+Kudos to ActuallyPortals for the original fork of this mod. [ItsSnowia]
+Thanks to Lumin3ra [Pehkui Resizer] for guidance in hooking onto Pehkui. [ActuallyPortals]
+Thanks to Bailey Hollingsworth [Ars Nouveau], the Containment Ritual proved a valuable example of serializing entities as Compound Tags. [ActuallyPortals]
+Thanks to modmuss50 [Chunk-in-a-Globe], the Item Model renderer proved a valuable example for working with rendering. [ActuallyPortals]
+Thanks to evanbones for working on this commissioned fork version of the Actually Size Interactions mod, and making one of my favorite childhood mods a reality. [ItsSnowia]
