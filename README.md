@@ -1,15 +1,16 @@
 # Actually Size Interactions: Reforked
 
-A fork of Actually Size Interactions to add gameplay and size interactions to the Minecraft world when big or small.
+A fork of Actually Size Interactions to add gameplay and size interactions to the Minecraft world when you're big or small.
 
-# Mod To-Do List:
-1. ~~Remove Big Building & Big Building Drop Rates Mechanics from the mod. **[MEDIUM PRIORITY]**~~
-2. ~~Remove Giant Torch Mechanic. **[HIGH PRIORITY]**~~
-3. ~~Add Size Crushing Damage. **[HIGH PRIORITY]**~~
-4. Add compatibility with survival overhaul mods, such as [Doomed](https://www.curseforge.com/minecraft/mc-mods/doomed-casualty-unknown-difficult-health-system), [Legendary Survival Overhaul](https://www.curseforge.com/minecraft/mc-mods/legendary-survival-overhaul) & [Tough as Nails](https://www.curseforge.com/minecraft/mc-mods/tough-as-nails) **[LOW PRIORITY]**
-5. ~~Fix an issue where the mod instantly crashes on newer or latest Forge modloader versions **[HIGH PRIORITY]**~~
-    - ~~(Crashes on Forge Version 47.1.11 or higher)~~
-6. ~~Add commands to switch your size on the fly in-game. **[HIGH PRIORITY]**~~
+# What is different in this fork?
+### **Feature List:**
+1. **Configs have been completely reworked.**
+2. **Added Size Commands.**
+3. **Size Crushing Damage.**
+4. **Removed Big Building and Big Building Drop Rates.**
+5. **Removed Giant Torch.**
+6. **Fixed an issue where the mod instantly crashes on newer or latest Forge modloader versions.**
 
-## Features should be worked on in this order, from first to last: 
-``[HIGH PRIORITY]`` > ``[MEDIUM PRIORITY]`` > ``[LOW PRIORITY]``.
+
+# Notes for evanbones:
+After you're done adding all the features in the ``TODO-LIST.txt``, be sure to remove this note and add them to the feature list above!
