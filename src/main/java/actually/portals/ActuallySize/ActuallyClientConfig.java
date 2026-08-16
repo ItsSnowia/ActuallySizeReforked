@@ -141,8 +141,8 @@ public class ActuallyClientConfig {
                 .define("preferablySmol", false);
 
         PREFERRED_SCALE = CONFIG_BUILDER.comment("§eYou will spawn this size")
-                .comment("For servers that allow you to freely choose your size, what scale do you want to be by default? Also affects the size at which you respawn. Set to '1' to disable this feature.")
-                .defineInRange("preferredScale", 1, 0.05, 25);
+                .comment("For servers that allow you to freely choose your size, what scale do you want to be by default? Also affects the size at which you respawn. Set to '1' to disable this feature. The server has final say and will clamp this to its own maximum allowed size.")
+                .defineInRange("preferredScale", 1, 0.05, 1000);
 
         CONFIG_BUILDER.pop();
         //endregion

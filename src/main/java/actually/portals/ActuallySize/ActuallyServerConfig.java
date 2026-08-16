@@ -60,6 +60,15 @@ public class ActuallyServerConfig {
     @NotNull private static final ForgeConfigSpec.BooleanValue FREE_SIZE;
 
     /**
+     * The overall ceiling on any scale a player can reach, whether through the
+     * Preferred/Free Size system or the {@code /asize} command, for non-operators.
+     * Operators are not bound by this limit.
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.DoubleValue MAX_ALLOWED_SIZE;
+
+    /**
      * If beegs receive less damage and knockback from all sources
      *
      * @since 1.0.0
@@ -86,6 +95,15 @@ public class ActuallyServerConfig {
      * @since 1.0.0
      */
     @NotNull private static final ForgeConfigSpec.DoubleValue SIZE_DAMAGE_LIMIT;
+
+    /**
+     * The maximum fraction of damage that "Beegs Are Tanky" can ever reduce, no matter
+     * how huge the beeg gets. A value of 0.9 means giants can never mitigate more than 90%
+     * of incoming damage, even at scales well past where the resistance curve flattens out.
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.DoubleValue MAX_TANKY_DAMAGE_REDUCTION;
 
     /**
      * The relative scale between a player and an entity so that the player can ride the entity
@@ -128,6 +146,15 @@ public class ActuallyServerConfig {
      * @since 1.0.0
      */
     @NotNull private static final ForgeConfigSpec.BooleanValue CRUSHING_SNEAK_PREVENTS;
+
+    /**
+     * The cooldown, in seconds, between self-resizes through the {@code /asize} command.
+     * Intended for server owners/modpack developers to curb resize spam. Operators
+     * are not bound by this cooldown. Set to 0 to disable.
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final ForgeConfigSpec.IntValue ASIZE_COMMAND_COOLDOWN;
 
     /**
      * Whether food is nerfed for giants and buffed for tinies. Also affects eat animation time.
@@ -218,15 +245,19 @@ public class ActuallyServerConfig {
         CONFIG_BUILDER.push("sizes");
         BEEG_SIZE = CONFIG_BUILDER.comment("§eThe size of beegs")
                 .comment("Players may indicate they prefer to be beeg, this is the size they will have by default when joining and respawning. Set to '1' to disable this feature.")
-                .defineInRange("beegSize", 8, 0.05, 25);
+                .defineInRange("beegSize", 8, 0.05, 1000);
 
         TINY_SIZE = CONFIG_BUILDER.comment("§eThe size of tinies")
                 .comment("Players may indicate they prefer to be tiny, this is the size they will have by default when joining and respawning. Set to '1' to disable this feature.")
-                .defineInRange("tinySize", 0.13, 0.05, 25);
+                .defineInRange("tinySize", 0.13, 0.05, 1000);
 
         FREE_SIZE = CONFIG_BUILDER.comment("§ePlayers may choose a size")
-                .comment("Gives players the option to freely choose whatever scale they want between 0.05x and 25x, to have as their default scale when joining.")
+                .comment("Gives players the option to freely choose whatever scale they want between 0.05x and the Max Allowed Size, to have as their default scale when joining.")
                 .define("allowFreeSize", true);
+
+        MAX_ALLOWED_SIZE = CONFIG_BUILDER.comment("§eOverall size ceiling for non-operators")
+                .comment("The largest scale a non-operator can ever reach, whether through Preferred/Free Size or the /asize command. Historically this was hard-coded to 25x. Note that the 'Beegs Are Tanky' resistance curve flattens out around 10x by default, so going much beyond that mostly just changes your hitbox, not your durability. Operators (permission level 2) are not bound by this limit.")
+                .defineInRange("maxAllowedSize", 25D, 1D, Double.MAX_VALUE);
         CONFIG_BUILDER.pop();
 
         CONFIG_BUILDER.pop();
@@ -257,6 +288,10 @@ public class ActuallyServerConfig {
         SIZE_DAMAGE_LIMIT = CONFIG_BUILDER.comment("§eCombat Damage amplification for giants")
                 .comment("If you would take more damage because you are small, the maximum multiplier. If you would deal bonus damage due to being beeg, the maximum multiplier. ")
                 .defineInRange("sizeDamageAmplifier", 25D, 1D, Double.MAX_VALUE);
+
+        MAX_TANKY_DAMAGE_REDUCTION = CONFIG_BUILDER.comment("§eDamage reduction cap for beegs")
+                .comment("The maximum fraction of damage that being a tanky beeg can ever reduce, expressed from 0 (no cap, damage can be reduced all the way to zero) to 1 (fully immune). Default of 0.9 means the biggest giants can still take 10% of a hit, instead of becoming completely immune to damage. Applies both to general damage taken and to combat between differently-sized combatants.")
+                .defineInRange("maxTankyDamageReduction", 0.9D, 0D, 1D);
 
         FEAR_THRESHOLD = CONFIG_BUILDER.comment("§eMonsters will fear giants")
                 .comment("This is the scale where monsters begin to fear you if you are a beeg, some may even panic. For example, 4.0 means monsters fear giants 4x bigger than them")
@@ -338,6 +373,16 @@ public class ActuallyServerConfig {
         CONFIG_BUILDER.pop();
         //endregion
 
+        //region Commands
+        CONFIG_BUILDER.push("commands");
+
+        ASIZE_COMMAND_COOLDOWN = CONFIG_BUILDER.comment("§eCooldown between self-resizes")
+                .comment("How many seconds a non-operator must wait between uses of /asize (and /asize reset) on themselves. Operators are not bound by this cooldown. Set to 0 to disable.")
+                .defineInRange("asizeCommandCooldownSeconds", 0, 0, Integer.MAX_VALUE);
+
+        CONFIG_BUILDER.pop();
+        //endregion
+
         SPEC = CONFIG_BUILDER.build();
     }
     //endregion
@@ -360,12 +405,16 @@ public class ActuallyServerConfig {
     public static double foodDuration, foodFrequency;
     public static double fearThreshold;
     public static double largestCranker, tiniestCranker, waterwheelCranker;
+    public static double maxAllowedSize;
+    public static double maxTankyDamageReduction;
 
     public static boolean enableCrushingDamage;
     public static double crushingThreshold;
     public static double crushingDamageMultiplier;
     public static double crushingDamageLimit;
     public static boolean crushingSneakPrevents;
+
+    public static int asizeCommandCooldownSeconds;
 
     /**
      * Reads the values specified in the config and loads them
@@ -398,8 +447,10 @@ public class ActuallyServerConfig {
         foodFrequency = BEEGS_ARE_HUNGRY_FREQUENCY.get();
 
         enableFreeSize = FREE_SIZE.get();
-        beegSize = BEEG_SIZE.get();
+        maxAllowedSize = MAX_ALLOWED_SIZE.get();
+        beegSize = Math.min(BEEG_SIZE.get(), maxAllowedSize);
         tinySize = TINY_SIZE.get();
+        maxTankyDamageReduction = MAX_TANKY_DAMAGE_REDUCTION.get();
 
         largestCranker = LARGEST_CRANKER.get();
         tiniestCranker = TINIEST_CRANKER.get();
@@ -411,6 +462,8 @@ public class ActuallyServerConfig {
         crushingDamageMultiplier = CRUSHING_DAMAGE_MULTIPLIER.get();
         crushingDamageLimit = CRUSHING_DAMAGE_LIMIT.get();
         crushingSneakPrevents = CRUSHING_SNEAK_PREVENTS.get();
+
+        asizeCommandCooldownSeconds = ASIZE_COMMAND_COOLDOWN.get();
     }
     //endregion
 }

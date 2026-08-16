@@ -253,7 +253,8 @@ public class ASIWorldSystemManager {
             if (aggressorScale > 0) {
 
                 // Adjust damage based on the relative scale from aggressor to me
-                aggressorAmplificationFactor = ASIUtilities.beegBalanceResist(mySize / aggressorScale, buffingLimit, 0);
+                double tankyFloor = 1 - ActuallyServerConfig.maxTankyDamageReduction;
+                aggressorAmplificationFactor = ASIUtilities.beegBalanceResist(mySize / aggressorScale, buffingLimit, tankyFloor);
 
                 // If the beeg is crouching, and bigger than us, there is no amplification. Tinies remain reduced tho.
                 if (aggressorIsCrouching && aggressorScale > mySize) { aggressorAmplificationFactor = 1; }
@@ -273,8 +274,8 @@ public class ASIWorldSystemManager {
         if (mySize > 1 && ActuallyServerConfig.tankyBeegs) {
             //ATT//ActuallySizeInteractions.Log("ASI &2 WSM &7 Tanky beeg");
 
-            // Reduce damage from all sources
-            sizeAmplificationFactor = ASIUtilities.beegBalanceResist(mySize, buffingLimit, 0);
+            double tankyFloor = 1 - ActuallyServerConfig.maxTankyDamageReduction;
+            sizeAmplificationFactor = ASIUtilities.beegBalanceResist(mySize, buffingLimit, tankyFloor);
 
         // When smol
         } else if (mySize < 1 && ActuallyServerConfig.delicateTinies) {

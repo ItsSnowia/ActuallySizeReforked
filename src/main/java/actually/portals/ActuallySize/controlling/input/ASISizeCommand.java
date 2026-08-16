@@ -13,6 +13,10 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * Registers the {@code /asize} command, letting players change their
  * own scale on the fly in-game, and letting operators change (or reset)
@@ -34,12 +38,22 @@ public class ASISizeCommand {
     private static final double MIN_SCALE = 0.02;
 
     /**
-     * The largest scale obtainable through this command, matching
-     * the clamp used by the "Preferred Size" free-size system.
+     * The largest scale obtainable through this command, as an absolute sanity
+     * ceiling for the argument parser. The actual limit for non-operators is
+     * the server-configured {@link ActuallyServerConfig#maxAllowedSize}.
      *
      * @since 1.0.0
      */
-    private static final double MAX_SCALE = 50;
+    private static final double MAX_SCALE = 1000;
+
+    /**
+     * The last time (in epoch milliseconds) each player used {@code /asize} on
+     * themselves, used to enforce {@link ActuallyServerConfig#asizeCommandCooldownSeconds}.
+     * Operators are exempt from this cooldown.
+     *
+     * @since 1.0.0
+     */
+    private static final Map<UUID, Long> lastSelfResize = new HashMap<>();
 
     @SubscribeEvent
     public static void OnRegisterCommands(RegisterCommandsEvent event) {
@@ -48,12 +62,12 @@ public class ASISizeCommand {
                 // /asize <scale>
                 .then(Commands.argument("scale", DoubleArgumentType.doubleArg(MIN_SCALE, MAX_SCALE))
                         .requires(source -> source.hasPermission(2) || ActuallyServerConfig.enableFreeSize)
-                        .executes(ctx -> setSelf(ctx.getSource().getPlayerOrException(), DoubleArgumentType.getDouble(ctx, "scale"))))
+                        .executes(ctx -> setSelf(ctx.getSource().getPlayerOrException(), DoubleArgumentType.getDouble(ctx, "scale"), ctx.getSource().hasPermission(2))))
 
                 // /asize reset
                 .then(Commands.literal("reset")
                         .requires(source -> source.hasPermission(2) || ActuallyServerConfig.enableFreeSize)
-                        .executes(ctx -> setSelf(ctx.getSource().getPlayerOrException(), 1)))
+                        .executes(ctx -> setSelf(ctx.getSource().getPlayerOrException(), 1, ctx.getSource().hasPermission(2))))
 
                 // /asize get
                 .then(Commands.literal("get")
@@ -75,10 +89,31 @@ public class ASISizeCommand {
     /**
      * @param who   The player resizing themselves
      * @param scale The scale to become
+     * @param isOp  Whether the player has operator permissions, exempting them from the
+     *              resize cooldown and the server's configured maximum allowed size
      * @author evanbones
      * @since 1.0.0
      */
-    private static int setSelf(ServerPlayer who, double scale) throws CommandSyntaxException {
+    private static int setSelf(ServerPlayer who, double scale, boolean isOp) throws CommandSyntaxException {
+        if (!isOp) {
+            int cooldown = ActuallyServerConfig.asizeCommandCooldownSeconds;
+            if (cooldown > 0) {
+                UUID id = who.getUUID();
+                long now = System.currentTimeMillis();
+                Long last = lastSelfResize.get(id);
+                long remainingMillis = last == null ? 0 : (last + cooldown * 1000L) - now;
+                if (remainingMillis > 0) {
+                    long remainingSeconds = (remainingMillis + 999) / 1000;
+                    who.sendSystemMessage(Component.literal("You must wait " + remainingSeconds + "s before resizing again."));
+                    return 0;
+                }
+                lastSelfResize.put(id, now);
+            }
+
+            double max = ActuallyServerConfig.maxAllowedSize;
+            if (scale > max) { scale = max; }
+        }
+
         ASIUtilities.setEntityScale(who, scale);
         who.sendSystemMessage(Component.literal("You are now " + format(scale) + "x your normal size."));
         return (int) Math.ceil(scale);

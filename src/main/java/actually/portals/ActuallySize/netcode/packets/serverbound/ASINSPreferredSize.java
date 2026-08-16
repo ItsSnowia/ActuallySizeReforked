@@ -164,9 +164,9 @@ public class ASINSPreferredSize {
         // Highest priority to free choice
         if (serverFree && preferredFree) {
 
-            // Clamp between an okay minimum and maximum
+            // Clamp between an okay minimum and the configured maximum
             double adjusted = getPreferredSize();
-            if (adjusted > 50) { adjusted = 50; }
+            if (adjusted > ActuallyServerConfig.maxAllowedSize) { adjusted = ActuallyServerConfig.maxAllowedSize; }
             if (adjusted < 0.02) { adjusted = 0.02; }
 
             // Use preferred size
