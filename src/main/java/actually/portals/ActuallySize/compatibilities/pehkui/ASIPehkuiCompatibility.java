@@ -70,7 +70,8 @@ public class ASIPehkuiCompatibility {
 
         // Real Kira-Adjustments
         SetEntityScaleInstant(mob, ScaleTypes.MOTION, ASIUtilities.beegBalanceResist(scale, 1, 0.5));
-        SetEntityScaleInstant(mob, ScaleTypes.JUMP_HEIGHT, ASIUtilities.beegBalanceEnhance(scale, 2, 1));
+
+        SetEntityScaleInstant(mob, ScaleTypes.JUMP_HEIGHT, Math.sqrt(ASIUtilities.beegBalanceEnhance(scale, 2, 1)));
         SetEntityScaleInstant(mob, ScaleTypes.BLOCK_REACH, ASIUtilities.beegBalanceResist(scale, 1, 0.7));
         SetEntityScaleInstant(mob, ScaleTypes.ENTITY_REACH, ASIUtilities.beegBalanceResist(scale, 1, 0.6));
     }

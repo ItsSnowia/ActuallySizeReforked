@@ -296,6 +296,43 @@ public class ASIWorldSystemManager {
 
     //region Crushing
     /**
+     * Tracks, per beeg, the position last seen and the tick that measurement
+     * was taken, so {@link #isActuallyStepping(LivingEntity)} can tell real
+     * per-tick movement apart from standing still.
+     *
+     * @since 1.0.0
+     */
+    @NotNull private static final java.util.Map<LivingEntity, double[]> actuallysize$lastCrushPosition = new java.util.WeakHashMap<>();
+
+    /**
+     * @param beeg The entity to check for real movement
+     *
+     * @return If this beeg has actually moved horizontally since the last time this
+     *         was checked for them
+     *
+     * @since 1.0.0
+     * @author evanbones
+     */
+    private static boolean isActuallyStepping(@NotNull LivingEntity beeg) {
+        double curX = beeg.getX();
+        double curZ = beeg.getZ();
+        int tick = beeg.tickCount;
+
+        double[] last = actuallysize$lastCrushPosition.get(beeg);
+        if (last != null && (int) last[2] == tick) { return last[3] != 0; }
+
+        boolean moving = false;
+        if (last != null) {
+            double dx = curX - last[0];
+            double dz = curZ - last[1];
+            moving = (dx * dx) + (dz * dz) >= 1.0E-5;
+        }
+
+        actuallysize$lastCrushPosition.put(beeg, new double[]{curX, curZ, tick, moving ? 1 : 0});
+        return moving;
+    }
+
+    /**
      * @param beeg The potentially larger entity, standing over the tiny
      * @param tiny The potentially smaller entity, being stood over
      *
@@ -311,7 +348,7 @@ public class ASIWorldSystemManager {
         if (beeg.isDeadOrDying() || tiny.isDeadOrDying()) { return false; }
 
         // standing still doesn't crush; the beeg has to actually be stepping
-        if (!beeg.walkAnimation.isMoving()) { return false; }
+        if (!isActuallyStepping(beeg)) { return false; }
 
         // crouching/crawling beegs are being careful about where they step
         if (ActuallyServerConfig.crushingSneakPrevents && (beeg.isCrouching() || beeg.getPose() == Pose.SWIMMING)) { return false; }

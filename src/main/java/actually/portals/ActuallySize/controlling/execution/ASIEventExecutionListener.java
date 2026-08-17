@@ -584,8 +584,9 @@ public class ASIEventExecutionListener {
         LivingEntity beeg = event.getEntity();
         if (beeg.level().isClientSide) { return; }
 
-        List<LivingEntity> nearby = beeg.level().getEntitiesOfClass(LivingEntity.class, beeg.getBoundingBox());
+        List<LivingEntity> nearby = beeg.level().getEntitiesOfClass(LivingEntity.class, beeg.getBoundingBox().inflate(0.3D, 0D, 0.3D));
         for (LivingEntity tiny : nearby) {
+            if (tiny == beeg) { continue; }
             if (!ASIWorldSystemManager.CanCrush(beeg, tiny)) { continue; }
             ASIWorldSystemManager.ApplyCrushing(beeg, tiny);
         }

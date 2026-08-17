@@ -100,7 +100,7 @@ public class ASIPSHeldEntityItem extends Item {
 
     @Override
     public @NotNull SoundEvent getEatingSound() {
-        return SoundEvents.PLAYER_HURT_DROWN;
+        return SoundEvents.PLAYER_BURP;
     }
 
     /**
